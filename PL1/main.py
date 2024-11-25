@@ -42,16 +42,41 @@ def PL1():
     
 
     # Coûts des ingrédients
-    costs = [float(input(f"Coût de l'ingrédient {i+1} (€) : ")) for i in range(n)]
+    # costs = [float(input(f"Coût de l'ingrédient {i+1} (€) : ")) for i in range(n)]
+
+    costs = []
+    for i in range(n):
+        try:
+            costs.append(float(input(f"Coût de l'ingrédient {i+1} (€) : ")))
+        except ValueError:
+            raise numericaltype("coûts")
+        if costs[i] < 0:
+            raise NegativeValueError(costs[i],"coûts")
     
 
     # Limites des disponibilités
-    availabilities = [float(input(f"Quantité disponible de l'ingrédient {i+1} (kg) : ")) for i in range(n)]
+    # availabilities = [float(input(f"Quantité disponible de l'ingrédient {i+1} (kg) : ")) for i in range(n)]
+
+    availabilities = []
+    for i in range(n):
+        try:
+            availabilities.append(float(input(f"Quantité disponible de l'ingrédient {i+1} (kg) : ")))
+        except ValueError:
+            raise numericaltype("disponibilités")
+        if availabilities[i] < 0:
+            raise NegativeValueError(availabilities[i],"disponibilités")
+
 
     # Matrice des contributions des ingrédients pour chaque propriété
     contributions = []
     for j in range(m):
         contributions.append([float(input(f"Contribution de l'ingrédient {i+1} à la propriété {j+1} : ")) for i in range(n)])
+
+    # for j in range(m):
+    #     for i in range(n):
+    #         contributions.append([float(input(f"Contribution de l'ingrédient {i+1} à la propriété {j+1} : "))])
+    #         if contributions[j][i] < 0:
+    #             raise NegativeValueError(contributions[j][i],"contributions")
 
     # Limites minimales et maximales des propriétés
     property_min = [float(input(f"Valeur minimale de la propriété {j+1} : ")) for j in range(m)]
