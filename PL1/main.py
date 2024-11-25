@@ -19,7 +19,7 @@ class propertyvalue(Exception):
     def __str__(self):
         return f"La valeur de {self.type} doit être un nombre entre 0 et 1."
 
-def PL1():
+def PL1(*args, **kwargs):
     # Créer le modèle
     model = Model("Problème de mélange")
 
@@ -110,7 +110,6 @@ def PL1():
             raise propertyvalue("valeurs maximales des propriétés")
 
     # Quantité totale du mélange
-    # total_quantity = float(input("Quantité totale du mélange (kg) : "))
     try:
         total_quantity = float(input("Quantité totale du mélange (kg) : "))
     except ValueError:
@@ -150,8 +149,8 @@ def PL1():
         print(f"Coût total : {model.objVal:.2f} €")
     else:
         print("Aucune solution optimale trouvée.")
-
-try:
-    PL1()        
-except Exception as e:
-    print(f"Une erreur s'est produite : {e}")
+if __name__ == '__main__':
+    try:
+        PL1()        
+    except Exception as e:
+        print(f"Une erreur s'est produite : {e}")

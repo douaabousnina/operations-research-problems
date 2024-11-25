@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PL1 Form</title>
+</head>
+<body>
+    <h1>PL1 Form</h1>
+    <form action="/PL1" method="POST">
+        <label for="n">Nombre d'ingrédients:</label>
+        <input type="number" id="n" name="n" required><br><br>
+
+        <label for="m">Nombre de propriétés:</label>
+        <input type="number" id="m" name="m" required><br><br>
+
+        <div id="costs">
+            <h3>Coûts des ingrédients:</h3>
+            <!-- Add inputs for costs dynamically based on the number of ingredients -->
+        </div>
+
+        <div id="contributions">
+            <h3>Contributions des ingrédients aux propriétés:</h3>
+            <!-- Add inputs for contributions dynamically based on the number of ingredients and properties -->
+        </div>
+
+        <div id="property_min">
+            <h3>Valeurs minimales des propriétés:</h3>
+            <!-- Add inputs for property_min dynamically based on the number of properties -->
+        </div>
+
+        <div id="property_max">
+            <h3>Valeurs maximales des propriétés:</h3>
+            <!-- Add inputs for property_max dynamically based on the number of properties -->
+        </div>
+
+        <label for="total_quantity">Quantité totale du mélange (kg):</label>
+        <input type="number" step="0.01" id="total_quantity" name="total_quantity" required><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById('n').addEventListener('input', updateForm);
+        document.getElementById('m').addEventListener('input', updateForm);
+
+        function updateForm() {
+            const n = document.getElementById('n').value;
+            const m = document.getElementById('m').value;
+
+            const costsDiv = document.getElementById('costs');
+            const contributionsDiv = document.getElementById('contributions');
+            const propertyMinDiv = document.getElementById('property_min');
+            const propertyMaxDiv = document.getElementById('property_max');
+
+            costsDiv.innerHTML = '<h3>Coûts des ingrédients:</h3>';
+            contributionsDiv.innerHTML = '<h3>Contributions des ingrédients aux propriétés:</h3>';
+            propertyMinDiv.innerHTML = '<h3>Valeurs minimales des propriétés:</h3>';
+            propertyMaxDiv.innerHTML = '<h3>Valeurs maximales des propriétés:</h3>';
+
+            for (let i = 0; i < n; i++) {
+                costsDiv.innerHTML += `<label for="cost${i+1}">Coût de l'ingrédient ${i+1} (€):</label>
+                                       <input type="number" step="0.01" id="cost${i+1}" name="cost${i+1}" required><br><br>`;
+            }
+
+            for (let j = 0; j < m; j++) {
+                propertyMinDiv.innerHTML += `<label for="property_min${j+1}">Valeur minimale de la propriété ${j+1}:</label>
+                                             <input type="number" step="0.01" id="property_min${j+1}" name="property_min${j+1}" required><br><br>`;
+                propertyMaxDiv.innerHTML += `<label for="property_max${j+1}">Valeur maximale de la propriété ${j+1}:</label>
+                                             <input type="number" step="0.01" id="property_max${j+1}" name="property_max${j+1}" required><br><br>`;
+                for (let i = 0; i < n; i++) {
+                    contributionsDiv.innerHTML += `<label for="contrib${i+1}${j+1}">Contribution de l'ingrédient ${i+1} à la propriété ${j+1}:</label>
+                                                   <input type="number" step="0.01" id="contrib${i+1}${j+1}" name="contrib${i+1}${j+1}" required><br><br>`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
