@@ -10,6 +10,12 @@
     <button> <a href="/PL1">PL1</a></button>
     <button> <a href="/PL2">PL2</a></button>
     <button> <a href="/PL3">PL3</a></button>
+    {% if error %}
+    <p>{{ error }}</p>
+    {% endif %}
+    {% if result %}
+    <p>{{ result }}</p>
+    {% endif %}
   </body>
 
   <script>
