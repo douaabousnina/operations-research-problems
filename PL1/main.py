@@ -68,25 +68,61 @@ def PL1():
 
 
     # Matrice des contributions des ingrédients pour chaque propriété
+    # for j in range(m):
+    #     contributions.append([float(input(f"Contribution de l'ingrédient {i+1} à la propriété {j+1} : ")) for i in range(n)])
+
     contributions = []
     for j in range(m):
-        contributions.append([float(input(f"Contribution de l'ingrédient {i+1} à la propriété {j+1} : ")) for i in range(n)])
+        row = []
+        for i in range(n):
+            try:
+                value = float(input(f"Contribution de l'ingrédient {i+1} à la propriété {j+1} : "))
+                row.append(value)
+            except ValueError:
+                raise numericaltype("contributions")    
+            if value < 0:
+                raise NegativeValueError(value,"contributions")
+        contributions.append(row)
 
-    # for j in range(m):
-    #     for i in range(n):
-    #         contributions.append([float(input(f"Contribution de l'ingrédient {i+1} à la propriété {j+1} : "))])
-    #         if contributions[j][i] < 0:
-    #             raise NegativeValueError(contributions[j][i],"contributions")
 
     # Limites minimales et maximales des propriétés
-    property_min = [float(input(f"Valeur minimale de la propriété {j+1} : ")) for j in range(m)]
-    property_max = [float(input(f"Valeur maximale de la propriété {j+1} : ")) for j in range(m)]
+    # property_min = [float(input(f"Valeur minimale de la propriété {j+1} : ")) for j in range(m)]
+    # property_max = [float(input(f"Valeur maximale de la propriété {j+1} : ")) for j in range(m)]
+
+    
+    # Limites minimales et maximales des propriétés
+    property_min = []
+    for j in range(m):
+        try:
+            value = float(input(f"Valeur minimale de la propriété {j+1} : "))
+            property_min.append(value)
+        except ValueError:
+            raise numericaltype("valeurs minimales des propriétés")
+        if value < 0:
+            raise NegativeValueError(value, "valeurs minimales des propriétés")
+
+    property_max = []
+    for j in range(m):
+        try:
+            value = float(input(f"Valeur maximale de la propriété {j+1} : "))
+            property_max.append(value)
+        except ValueError:
+            raise numericaltype("valeurs maximales des propriétés")
+        if value < 0:
+            raise NegativeValueError(value, "valeurs maximales des propriétés")
+
 
     # Quantité totale du mélange
-    total_quantity = float(input("Quantité totale du mélange (kg) : "))
+    # total_quantity = float(input("Quantité totale du mélange (kg) : "))
+    try:
+        total_quantity = float(input("Quantité totale du mélange (kg) : "))
+    except ValueError:
+        raise numericaltype("quantité totale")
+    if total_quantity < 0:
+        raise NegativeValueError(total_quantity,"quantité totale")
 
     # **Variables de décision**
-    x = model.addVars(n, lb=0, ub=availabilities, name="x")
+    x = model.addVars(n, lb=0, ub=availabilities, name="IngredientQuantity")
 
     # **Fonction objectif**
     model.setObjective(sum(costs[i] * x[i] for i in range(n)), GRB.MINIMIZE)
