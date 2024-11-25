@@ -1,0 +1,21 @@
+example vraai
+
+Nombre d'ingrédients : 3
+Nombre de propriétés : 2
+Coût de l'ingrédient 1 (€) : 5
+Coût de l'ingrédient 2 (€) : 3
+Coût de l'ingrédient 3 (€) : 4
+Quantité disponible de l'ingrédient 1 (kg) : 50
+Quantité disponible de l'ingrédient 2 (kg) : 60
+Quantité disponible de l'ingrédient 3 (kg) : 40
+Contribution de l'ingrédient 1 à la propriété 1 : 0.8
+Contribution de l'ingrédient 2 à la propriété 1 : 0.5
+Contribution de l'ingrédient 3 à la propriété 1 : 0.6
+Contribution de l'ingrédient 1 à la propriété 2 : 0.4
+Contribution de l'ingrédient 2 à la propriété 2 : 0.7
+Contribution de l'ingrédient 3 à la propriété 2 : 0.5
+Valeur minimale de la propriété 1 : 0.6
+Valeur minimale de la propriété 2 : 0.5
+Valeur maximale de la propriété 1 : 0.7
+Valeur maximale de la propriété 2 : 0.6
+Quantité totale du mélange (kg) : 100
