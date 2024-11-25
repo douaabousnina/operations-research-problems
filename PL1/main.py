@@ -5,19 +5,19 @@ class NegativeValueError(Exception):
         self.value = value
         self.type = type
     def __str__(self):
-        return f"Le nombre de {self.type} ne peut pas être négative."
+        return f"{self.type} ne peut pas être négatif(ve)."
 
 class NumericalType(Exception):
     def __init__(self,type):
         self.type = type
     def __str__(self):
-        return f"La valeur de {self.type} doit être un nombre entier."
+        return f"{self.type} doit être un nombre entier."
 
 class PropertyValue(Exception):
     def __init__(self,type):
         self.type = type
     def __str__(self):
-        return f"La valeur de {self.type} doit être un nombre entre 0 et 1."
+        return f"{self.type} doit être un nombre entre 0 et 1."
 
 
 def PL1(n,m,costs,availabilities,contributions,property_min,property_max,total_quantity):
@@ -30,20 +30,20 @@ def PL1(n,m,costs,availabilities,contributions,property_min,property_max,total_q
     try:
         n = int(n)
     except ValueError:
-        raise NumericalType("ingrédients")
+        raise NumericalType("Le nombre des ingrédients")
     
     if n < 0:
-        raise NegativeValueError(n,"ingrédients")   
+        raise NegativeValueError(n,"Le nombre des ingrédients")   
     
   
     try:    
         m = int(m)
     except ValueError:
-        raise NumericalType("propriétés")  
+        raise NumericalType("Le nombre des propriétés")  
 
 
     if m < 0:
-        raise NegativeValueError(m,"propriétés")
+        raise NegativeValueError(m,"Le nombre des propriétés")
 
     
 
@@ -52,9 +52,9 @@ def PL1(n,m,costs,availabilities,contributions,property_min,property_max,total_q
         try:
             cost = float(cost)
         except ValueError:
-            raise NumericalType("coûts")
+            raise NumericalType("Le coût")
         if cost < 0:
-            raise NegativeValueError(cost,"coûts")
+            raise NegativeValueError(cost,"Le coût")
     
 
     # Limites des disponibilités
@@ -62,9 +62,9 @@ def PL1(n,m,costs,availabilities,contributions,property_min,property_max,total_q
         try:
             availability = float(availability)
         except ValueError:
-            raise NumericalType("disponibilités")
+            raise NumericalType("La disponibilité")
         if availability < 0:
-            raise NegativeValueError(availability,"disponibilités")
+            raise NegativeValueError(availability,"La disponibilité")
 
 
     # Matrice des contributions des ingrédients pour chaque propriété
@@ -73,9 +73,9 @@ def PL1(n,m,costs,availabilities,contributions,property_min,property_max,total_q
             try:
                 contributions[j_index][i_index] = float(contribution)  # Update the original list
             except ValueError:
-                raise NumericalType("contributions")    
+                raise NumericalType("La contribution")    
             if contributions[j_index][i_index] < 0 or contributions[j_index][i_index] > 1:
-                raise PropertyValue("contributions")
+                raise PropertyValue("La contributions")
 
     # Limites minimales et maximales des propriétés
     for j_index, property in enumerate(property_min):
@@ -84,9 +84,9 @@ def PL1(n,m,costs,availabilities,contributions,property_min,property_max,total_q
                 property = 0
             property_min[j_index] = float(property)
         except ValueError:
-            raise NumericalType("valeurs minimales des propriétés")
+            raise NumericalType("La valeur minimale de la propriété")
         if property_min[j_index] < 0 or property_min[j_index] > 1:
-            raise PropertyValue("valeurs minimales des propriétés")
+            raise PropertyValue("La valeur minimale de la propriété")
         
     for j_index, property in enumerate(property_max):
         try:
@@ -94,18 +94,18 @@ def PL1(n,m,costs,availabilities,contributions,property_min,property_max,total_q
                 property = 1
             property_max[j_index] = float(property)
         except ValueError:
-            raise NumericalType("valeurs maximales des propriétés")
+            raise NumericalType("La valeur maximale de la propriété")
         if property_max[j_index] < 0 or property_max[j_index] > 1:
-            raise PropertyValue("valeurs maximales des propriétés")
+            raise PropertyValue("La valeur maximale de la propriété")
 
 
     # Quantité totale du mélange
     try:
         total_quantity = float(total_quantity)
     except ValueError:
-        raise NumericalType("quantité totale")
+        raise NumericalType("La quantité totale")
     if total_quantity < 0:
-        raise NegativeValueError(total_quantity,"quantité totale")
+        raise NegativeValueError(total_quantity,"La quantité totale")
     
 
     # **Variables de décision**
