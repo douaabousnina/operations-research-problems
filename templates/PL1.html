@@ -9,10 +9,10 @@
     <h1>PL1 Form</h1>
     <form action="/PL1" method="POST">
         <label for="n">Nombre d'ingrédients:</label>
-        <input type="number" id="n" name="n" required><br><br>
+        <input type="number" max="120" id="n" name="n" required><br><br>
 
         <label for="m">Nombre de propriétés:</label>
-        <input type="number" id="m" name="m" required><br><br>
+        <input type="number" max="120"  id="m" name="m" required><br><br>
 
         <div id="costs">
             <h3>Coûts des ingrédients:</h3>
@@ -40,7 +40,7 @@
         </div>
 
         <label for="total_quantity">Quantité totale du mélange (kg):</label>
-        <input type="number" step="0.001" id="total_quantity" name="total_quantity" required><br><br>
+        <input type="number" max="120" step="0.001" id="total_quantity" name="total_quantity" required><br><br>
 
         <button type="submit">Submit</button>
     </form>
@@ -68,22 +68,22 @@
 
             for (let i = 0; i < n; i++) {
                 costsDiv.innerHTML += `<label for="cost${i+1}">Coût de l'ingrédient ${i+1} (€):</label>
-                                       <input type="number" step="0.001" id="cost${i+1}" name="cost${i+1}" required><br><br>`;
+                                       <input type="number" max="120" step="0.001" id="cost${i+1}" name="cost${i+1}" required><br><br>`;
             }
 
             for (let i = 0; i < n; i++) {
                 availabilitiesDiv.innerHTML += `<label for="availability${i+1}">Disponibilité de l'ingrédient ${i+1} (kg):</label>
-                                                <input type="number" step="0.001" id="availability${i+1}" name="availability${i+1}" required><br><br>`;
+                                                <input type="number" max="120" step="0.001" id="availability${i+1}" name="availability${i+1}" required><br><br>`;
             }
 
             for (let j = 0; j < m; j++) {
                 propertyMinDiv.innerHTML += `<label for="property_min${j+1}">Valeur minimale de la propriété ${j+1}:</label>
-                                             <input type="number" step="0.001" id="property_min${j+1}" name="property_min${j+1}" required><br><br>`;
+                                             <input type="number" max="120" step="0.001" id="property_min${j+1}" name="property_min${j+1}" required><br><br>`;
                 propertyMaxDiv.innerHTML += `<label for="property_max${j+1}">Valeur maximale de la propriété ${j+1}:</label>
-                                             <input type="number" step="0.001" id="property_max${j+1}" name="property_max${j+1}" required><br><br>`;
+                                             <input type="number" max="120" step="0.001" id="property_max${j+1}" name="property_max${j+1}" required><br><br>`;
                 for (let i = 0; i < n; i++) {
                     contributionsDiv.innerHTML += `<label for="contrib${i+1}${j+1}">Contribution de l'ingrédient ${i+1} à la propriété ${j+1}:</label>
-                                                   <input type="number" step="0.001" id="contrib${i+1}${j+1}" name="contrib${i+1}${j+1}" required><br><br>`;
+                                                   <input type="number" max="120" step="0.001" id="contrib${i+1}${j+1}" name="contrib${i+1}${j+1}" required><br><br>`;
                 }
             }
         }
