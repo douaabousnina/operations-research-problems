@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Graph Coloring Result</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Graph Coloring Result</h1>
+        <p>Number of colors used: <strong>{{ num_colors }}</strong></p>
+        <table>
+            <tr>
+                <th>Vertex</th>
+                <th>Color</th>
+            </tr>
+            {% for vertex, color in solution.items() %}
+            <tr>
+                <td>{{ vertex }}</td>
+                <td>{{ color }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a href="{{ url_for('index') }}" class="button">Solve Another Graph</a>
+    </div>
+</body>
+</html>

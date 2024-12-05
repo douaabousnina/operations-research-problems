@@ -1,5 +1,6 @@
 from flask import *
 from PL1.main import PL1
+from PL2.main import solve_graph_coloring
 import traceback
 
 app	= Flask(__name__)
@@ -38,6 +39,37 @@ def PL_1():
             error_details = traceback.format_exc()  # Get the full error traceback as a string
             return render_template('index.html', error=error_details)
     return render_template('PL1.html')
+
+@app.route("/PL2", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        # Get the number of vertices and edges
+        try:
+            num_vertices = int(request.form["num_vertices"])
+            num_edges = int(request.form["num_edges"])
+            if num_vertices < 0 or num_edges < 0:
+                raise ValueError
+        except ValueError:
+            return render_template("index2.html", error="Please enter a valid number of vertices and edges.")
+            
+        # Parse edges
+        try:
+            edges = []
+            for i in range(num_edges):
+                edge = request.form[f"edge_{i}"].split()
+                edges.append((int(edge[0]), int(edge[1])))
+        except (IndexError, ValueError, KeyError):
+            return render_template("index2.html", error="Please enter valid edges.")
+
+        # Solve the graph coloring problem
+        try: 
+            solution, num_colors = solve_graph_coloring(num_vertices, edges)
+        except Exception as e:
+            return render_template("index2.html", error="No solution. Please check your input.")
+  
+        
+        return render_template("result.html", solution=solution, num_colors=num_colors)
+    return render_template("index2.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
