@@ -3,6 +3,7 @@ body {
     background: #f4f4f4;
     margin: 0;
     padding: 0;
+    background-color: #555;
 }
 
 .container {
@@ -96,3 +97,9 @@ a.button:hover {
     display: flex;
     justify-content: center;
 }
+
+#edges{
+    display: flex;
+    flex-direction: column;
+}
+
