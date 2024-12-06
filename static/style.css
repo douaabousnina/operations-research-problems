@@ -90,3 +90,9 @@ a.button:hover {
     margin-top: 20px;
     border-radius: 4px;
 }
+
+.graphdiv
+{
+    display: flex;
+    justify-content: center;
+}

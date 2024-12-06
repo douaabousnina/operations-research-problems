@@ -1,6 +1,7 @@
 from flask import *
 from PL1.main import PL1
 from PL2.main import solve_graph_coloring
+from test import render_graph
 import traceback
 
 app	= Flask(__name__)
@@ -64,11 +65,12 @@ def index():
         # Solve the graph coloring problem
         try: 
             solution, num_colors = solve_graph_coloring(num_vertices, edges)
+            render_graph(edges, solution)
         except Exception as e:
             return render_template("index2.html", error="No solution. Please check your input.")
   
-        
-        return render_template("result.html", solution=solution, num_colors=num_colors)
+        print(solution, num_colors)
+        return render_template("result.html",solution=solution, num_colors=num_colors)
     return render_template("index2.html")
 
 if __name__ == '__main__':

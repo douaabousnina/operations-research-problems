@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 
 def solve_graph_coloring(num_vertices, edges):
+    
     """Solve the graph coloring problem using Gurobi."""
     # Create the model
     model = Model("Graph Coloring")
@@ -41,7 +42,9 @@ def solve_graph_coloring(num_vertices, edges):
                 break
 
     num_colors = sum(y[c].x > 0.5 for c in range(max_colors))
+    print(solution, int(num_colors))
     return solution, int(num_colors)
+
 
 
 if __name__ == "__main__":
