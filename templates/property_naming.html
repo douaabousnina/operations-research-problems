@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Property Naming</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .property-section { background: #f4f4f4; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
+        input { margin: 5px 0; width: 100%; padding: 5px; }
+        button { width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Name the Properties</h1>
+    <form method="POST">
+        {% for i in range(num_properties) %}
+            <label for="property_name_{{ i }}">Property {{ i + 1 }} Name:</label>
+            <input type="text" id="property_name_{{ i }}" name="property_name_{{ i }}" required>
+            <br>
+        {% endfor %}
+        <button type="submit">Next</button>
+    </form>
+</body>
+</html>
