@@ -1,92 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PL1 Form</title>
+    <title>Blending Problem Solver</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .form-container { background: #f4f4f4; padding: 20px; border-radius: 5px; }
+        input { margin: 10px 0; width: 100%; padding: 5px; }
+        button { width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
+    </style>
 </head>
 <body>
-    <h1>PL1 Form</h1>
-    <form action="/PL1" method="POST">
-        <label for="n">Nombre d'ingrédients:</label>
-        <input type="number" max="120" id="n" name="n" required><br><br>
-
-        <label for="m">Nombre de propriétés:</label>
-        <input type="number" max="120"  id="m" name="m" required><br><br>
-
-        <div id="costs">
-            <h3>Coûts des ingrédients:</h3>
-            <!-- Add inputs for costs dynamically based on the number of ingredients -->
-        </div>
-
-        <div id="availabilities">
-            <h3>Disponibilités des ingrédients:</h3>
-            <!-- Add inputs for availabilities dynamically based on the number of ingredients -->
-        </div>       
-
-        <div id="contributions">
-            <h3>Contributions des ingrédients aux propriétés:</h3>
-            <!-- Add inputs for contributions dynamically based on the number of ingredients and properties -->
-        </div>
-
-        <div id="property_min">
-            <h3>Valeurs minimales des propriétés:</h3>
-            <!-- Add inputs for property_min dynamically based on the number of properties -->
-        </div>
-
-        <div id="property_max">
-            <h3>Valeurs maximales des propriétés:</h3>
-            <!-- Add inputs for property_max dynamically based on the number of properties -->
-        </div>
-
-        <label for="total_quantity">Quantité totale du mélange (kg):</label>
-        <input type="number" max="120" step="0.001" id="total_quantity" name="total_quantity" required><br><br>
-
-        <button type="submit">Submit</button>
-    </form>
-
-    <script>
-        document.getElementById('n').addEventListener('input', updateForm);
-        document.getElementById('m').addEventListener('input', updateForm);
-
-        function updateForm() {
-            const n = document.getElementById('n').value;
-            const m = document.getElementById('m').value;
-
-            const costsDiv = document.getElementById('costs');
-            const contributionsDiv = document.getElementById('contributions');
-            const propertyMinDiv = document.getElementById('property_min');
-            const propertyMaxDiv = document.getElementById('property_max');
-            const availabilitiesDiv = document.getElementById('availabilities');
-
-            costsDiv.innerHTML = '<h3>Coûts des ingrédients:</h3>';
-            availabilitiesDiv.innerHTML = '<h3>Disponibilités des ingrédients:</h3>';
-            contributionsDiv.innerHTML = '<h3>Contributions des ingrédients aux propriétés:</h3>';
-            propertyMinDiv.innerHTML = '<h3>Valeurs minimales des propriétés:</h3>';
-            propertyMaxDiv.innerHTML = '<h3>Valeurs maximales des propriétés:</h3>';
-
-
-            for (let i = 0; i < n; i++) {
-                costsDiv.innerHTML += `<label for="cost${i+1}">Coût de l'ingrédient ${i+1} (€):</label>
-                                       <input type="number" max="120" step="0.001" id="cost${i+1}" name="cost${i+1}" required><br><br>`;
-            }
-
-            for (let i = 0; i < n; i++) {
-                availabilitiesDiv.innerHTML += `<label for="availability${i+1}">Disponibilité de l'ingrédient ${i+1} (kg):</label>
-                                                <input type="number" max="120" step="0.001" id="availability${i+1}" name="availability${i+1}" required><br><br>`;
-            }
-
-            for (let j = 0; j < m; j++) {
-                propertyMinDiv.innerHTML += `<label for="property_min${j+1}">Valeur minimale de la propriété ${j+1}:</label>
-                                             <input type="number" max="120" step="0.001" id="property_min${j+1}" name="property_min${j+1}" required><br><br>`;
-                propertyMaxDiv.innerHTML += `<label for="property_max${j+1}">Valeur maximale de la propriété ${j+1}:</label>
-                                             <input type="number" max="120" step="0.001" id="property_max${j+1}" name="property_max${j+1}" required><br><br>`;
-                for (let i = 0; i < n; i++) {
-                    contributionsDiv.innerHTML += `<label for="contrib${i+1}${j+1}">Contribution de l'ingrédient ${i+1} à la propriété ${j+1}:</label>
-                                                   <input type="number" max="120" step="0.001" id="contrib${i+1}${j+1}" name="contrib${i+1}${j+1}" required><br><br>`;
-                }
-            }
-        }
-    </script>
+    <h1>Blending Problem Solver</h1>
+    <div class="form-container">
+        <form method="post">
+            <label>Number of Ingredients:</label>
+            <input type="number" name="num_ingredients" min="1" required><br>
+            
+            <label>Number of Properties:</label>
+            <input type="number" name="num_properties" min="1" required><br>
+            
+            <label>Total Product Quantity:</label>
+            <input type="number" step="any" name="total_quantity" min="0" required><br>
+            
+            <button type="submit">Next</button>
+        </form>
+    </div>
 </body>
 </html>
