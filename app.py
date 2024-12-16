@@ -164,61 +164,76 @@ def index2():
     return render_template("index2.html")
 
 
+
+
 @app.route('/PL3', methods=['GET', 'POST'])
 def PL3():
-    if request.method == 'GET':
-        # Render the multi-step form page when the user visits the page
-        return render_template('PL3.html')
-    
-    elif request.method == 'POST':
-        # Handle form submission, expect JSON input
-        try:
-            
-            data = request.get_json()  # Get the data sent by the client
-            print(data)
-            
-            periods = data['periods']
-            products = data['products']
-            demands = data['demands']  # A dictionary of product-period keys and their demand values
-            holding_costs = data['holding_costs']
-            ordering_costs = data['ordering_costs']
-            setup_costs = data['setup_costs']
-            expiration_periods = data['expiration_periods']
-            capacities = data['capacities']
-            shared_capacity = data.get('shared_capacity', None)
+    if request.method == 'POST':
+        # Retrieve number of periods and products
+        periods = int(request.form['periods'])
+        products = int(request.form['products'])
 
-            # Process the data here as needed
-            # Example: You can access demand for a specific product-period combination
-            demand = demands.get('Product1-Period1', 0)  # Default to 0 if not found
-            
-            # Solve the optimization problem using the provided data
-            order_quantities, inventory_levels, total_cost = solve_multi_product_inventory(
-                periods=periods,
-                products=products,
-                demands=demands,
-                holding_costs=holding_costs,
-                ordering_costs=ordering_costs,
-                setup_costs=setup_costs,
-                capacities=capacities,
-                expiration_periods=expiration_periods,
-                shared_capacity=shared_capacity
-            )
-            print(order_quantities, inventory_levels, total_cost)
-            
-            # Check if the optimization is successful
-            if order_quantities is None:
-                return jsonify({"status": "error", "message": "Optimization failed"}), 400
-            
-            # Render the result page with the solution data
-            return render_template(
-                'resultPL3.html',  # Display results in resultPL3.html
-                order_quantities = order_quantities,
-                inventory_levels = inventory_levels,
-                total_cost = total_cost
-            )
-        
-        except Exception as e:
-            return jsonify({"status": "error", "message": str(e)}), 400
+        # Redirect to the product names page
+        return redirect(url_for('PL3_names', periods=periods, products=products))
+
+    return render_template('PL3.html')
+
+
+@app.route('/PL3/names', methods=['GET', 'POST'])
+def PL3_names():
+    periods = int(request.args.get('periods'))
+    products = int(request.args.get('products'))
+
+    if request.method == 'POST':
+        # Retrieve product names and pass them to the details form
+        product_names = [request.form[f'product_name_{i}'] for i in range(1, products + 1)]
+        return redirect(url_for('PL3_details', periods=periods, products=products, product_names=','.join(product_names)))
+
+    return render_template('PL3_names.html', periods=periods, products=products)
+
+
+@app.route('/PL3/details', methods=['GET', 'POST'])
+def PL3_details():
+    periods = int(request.args.get('periods'))
+    products = int(request.args.get('products'))
+    product_names = request.args.get('product_names').split(',')
+
+    if request.method == 'POST':
+        demands = {(p, t): float(request.form[f'demand_{p}_{t}']) 
+                   for p in range(products) for t in range(periods)}
+        holding_costs = {p: float(request.form[f'holding_cost_{p}']) for p in range(products)}
+        ordering_costs = {p: float(request.form[f'ordering_cost_{p}']) for p in range(products)}
+        setup_costs = {p: float(request.form[f'setup_cost_{p}']) for p in range(products)}
+        capacities = {p: float(request.form[f'capacity_{p}']) for p in range(products)}
+        expiration_periods = {p: int(request.form[f'expiration_{p}']) for p in range(products)}
+        shared_capacity = float(request.form['shared_capacity']) if 'shared_capacity' in request.form else None
+
+        print(demands)
+        print(holding_costs)
+        print(ordering_costs)
+        print(setup_costs)
+        print(capacities)
+        print(expiration_periods)
+        print(shared_capacity)
+
+
+        order_quantities, inventory_levels, total_cost = solve_multi_product_inventory(
+            periods, products, demands, holding_costs, ordering_costs,
+            setup_costs, capacities, expiration_periods, shared_capacity
+        )
+
+        if order_quantities is None:
+            return render_template('PL3_details.html', error="Optimization failed.", periods=periods, products=products, product_names=product_names)
+
+        return render_template('PL3_results.html', 
+                               order_quantities=order_quantities, 
+                               inventory_levels=inventory_levels, 
+                               total_cost=total_cost,
+                               product_names=product_names)
+
+    return render_template('PL3_details.html', periods=periods, products=products, product_names=product_names)
+
+
 
 
 

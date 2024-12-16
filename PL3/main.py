@@ -86,7 +86,9 @@ def solve_multi_product_inventory(periods, products, demands, holding_costs, ord
                               for t in range(periods)}
             total_cost = model.ObjVal
             
+            print(order_quantities,"\n", inventory_levels,"\n", total_cost)
             return order_quantities, inventory_levels, total_cost
+        
         else:
             print(f"Optimization failed with status {model.Status}")
             return None, None, None
@@ -117,7 +119,7 @@ def print_solution(order_quantities, inventory_levels, total_cost, periods, prod
 
 # Example usage
 if __name__ == "__main__":
-    # Problem parameters
+  
     periods = 4
     products = 3
     
@@ -133,13 +135,35 @@ if __name__ == "__main__":
     })
     
     # Costs and constraints
-    holding_costs = {0: 2, 1: 3, 2: 2.5}          # Holding cost per unit per period
-    ordering_costs = {0: 3, 1: 4, 2: 3.5}         # Cost per unit ordered
+    holding_costs = {0: 2, 1: 3, 2: 2}          # Holding cost per unit per period
+    ordering_costs = {0: 3, 1: 4, 2: 3}         # Cost per unit ordered
     setup_costs = {0: 100, 1: 120, 2: 110}        # Fixed cost per order
     capacities = {0: 50, 1: 60, 2: 70}            # Individual capacity limits
     shared_capacity = 150                          # Total warehouse capacity
     expiration_periods = {0: 1, 1: 4, 2: 4}       # Shelf life in periods
     
+    # periods = 3
+    # products = 1    
+
+    # demands = {
+    #     (0,t): [1][t] for t in range(periods)    # Product 0
+    # }
+
+    # holding_costs = {0: 1}          # Holding cost per unit per period
+    # ordering_costs = {0: 1}         # Cost per unit ordered
+    # setup_costs = {0: 1}        # Fixed cost per order
+    # capacities = {0: 1}            # Individual capacity limits
+    # shared_capacity = 1                          # Total warehouse capacity
+    # expiration_periods = {0: 1}       # Shelf life in periods
+    
+    # print(demands)
+    # print(holding_costs)
+    # print(ordering_costs)
+    # print(setup_costs)
+    # print(capacities)
+    # print(expiration_periods)
+    # print(shared_capacity)
+
     # Solve the problem
     orders, inventory, cost = solve_multi_product_inventory(
         periods=periods,
