@@ -4,21 +4,82 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Projet RO</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background: rgb(89,204,203);
+background: radial-gradient(circle, rgba(89,204,203,1) 0%, rgba(226,58,234,1) 100%);
+      }
+
+      .container {
+        text-align: center;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        width: 300px;
+      }
+
+      h1 {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin: 10px 0;
+        width: 100%;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      a {
+        text-decoration: none;
+        color: white;
+        display: block;
+        width: 100%;
+      }
+
+      p {
+        color: #d9534f;
+        font-size: 1rem;
+        margin-top: 10px;
+      }
+
+      .result {
+        color: #5bc0de;
+        font-size: 1rem;
+        margin-top: 10px;
+      }
+    </style>
   </head>
-  <h1>Projet RO</h1>
   <body>
-    <button> <a href="/PL1">PL1</a></button>
-    <button> <a href="/PL2">PL2</a></button>
-    <button> <a href="/PL3">PL3</a></button>
-    {% if error %}
-    <p>{{ error }}</p>
-    {% endif %}
-    {% if result %}
-    <p>{{ result }}</p>
-    {% endif %}
+    <div class="container">
+      <h1>Projet RO</h1>
+      <button><a href="/PL1">PL1</a></button>
+      <button><a href="/PL2">PL2</a></button>
+      <button><a href="/PL3">PL3</a></button>
+      {% if error %}
+        <p>{{ error }}</p>
+      {% endif %}
+      {% if result %}
+        <p class="result">{{ result }}</p>
+      {% endif %}
+    </div>
   </body>
-
-  <script>
-
-  </script>
 </html>

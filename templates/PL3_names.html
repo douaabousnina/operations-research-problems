@@ -4,15 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory Optimization - Product Names</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 400px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Step 2: Enter Product Names</h1>
-    <form method="POST">
-        {% for i in range(1, products + 1) %}
-            <label for="product_name_{{ i }}">Product {{ i }} Name:</label>
-            <input type="text" id="product_name_{{ i }}" name="product_name_{{ i }}" required><br><br>
-        {% endfor %}
-        <button type="submit">Next</button>
-    </form>
+    <div class="container">
+        <h1>Step 2: Enter Product Names</h1>
+        <form method="POST">
+            {% for i in range(1, products + 1) %}
+                <div class="form-group">
+                    <label for="product_name_{{ i }}">Product {{ i }} Name:</label>
+                    <input type="text" id="product_name_{{ i }}" name="product_name_{{ i }}" required>
+                </div>
+            {% endfor %}
+            <button type="submit">Next</button>
+        </form>
+    </div>
 </body>
 </html>
