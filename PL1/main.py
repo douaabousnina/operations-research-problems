@@ -1,147 +1,87 @@
 from gurobipy import Model, GRB
 
-class NegativeValueError(Exception):    
-    def __init__(self, value,type):
-        self.value = value
-        self.type = type
-    def __str__(self):
-        return f"{self.type} ne peut pas être négatif(ve)."
 
-class NumericalType(Exception):
-    def __init__(self,type):
-        self.type = type
-    def __str__(self):
-        return f"{self.type} doit être un nombre entier."
-
-class PropertyValue(Exception):
-    def __init__(self,type):
-        self.type = type
-    def __str__(self):
-        return f"{self.type} doit être un nombre entre 0 et 1."
-
-
-def PL1(n,m,costs,availabilities,contributions,property_min,property_max,total_quantity):
-
-    # Créer le modèle
-    model = Model("Problème de mélange")
-
-    # **Entrées dynamiques**
-    # Nombre d'ingrédients et propriétés
-    try:
-        n = int(n)
-    except ValueError:
-        raise NumericalType("Le nombre des ingrédients")
-    
-    if n < 0:
-        raise NegativeValueError(n,"Le nombre des ingrédients")   
-    
-  
-    try:    
-        m = int(m)
-    except ValueError:
-        raise NumericalType("Le nombre des propriétés")  
-
-
-    if m < 0:
-        raise NegativeValueError(m,"Le nombre des propriétés")
-
-    
-
-    # Coûts des ingrédients
-    for cost in costs:
+def solve_blending_problem(ingredients, properties, property_bounds, total_quantity):
         try:
-            cost = float(cost)
-        except ValueError:
-            raise NumericalType("Le coût")
-        if cost < 0:
-            raise NegativeValueError(cost,"Le coût")
-    
+            # Validate inputs
+            if not ingredients or not properties or not property_bounds:
+                raise ValueError("Ingredients, properties, or property bounds are missing or empty.")
+            if total_quantity <= 0:
+                raise ValueError("Total quantity must be greater than zero.")
+            for ingredient in ingredients:
+                if not all(k in ingredient for k in ['name', 'cost_per_unit', 'available_quantity', 'properties']):
+                    raise ValueError(f"Ingredient {ingredient} is missing required fields.")
+            
+            # Create Gurobi model
+            model = Model("Blending Problem")
+            model.setParam('OutputFlag', 0)  # Suppress solver output
+            
+            # Number of ingredients
+            n = len(ingredients)
 
-    # Limites des disponibilités
-    for availability in availabilities:
-        try:
-            availability = float(availability)
-        except ValueError:
-            raise NumericalType("La disponibilité")
-        if availability < 0:
-            raise NegativeValueError(availability,"La disponibilité")
+            # Decision variables: quantity of each ingredient
+            x = model.addVars(n, lb=0, name="ingredient_quantity")
 
+            # Objective: Minimize total cost
+            model.setObjective(
+                sum(x[i] * ingredients[i]['cost_per_unit'] for i in range(n)),
+                GRB.MINIMIZE
+            )
 
-    # Matrice des contributions des ingrédients pour chaque propriété
-    for j_index, row in enumerate(contributions):
-        for i_index, contribution in enumerate(row):
-            try:
-                contributions[j_index][i_index] = float(contribution)  # Update the original list
-            except ValueError:
-                raise NumericalType("La contribution")    
-            if contributions[j_index][i_index] < 0 or contributions[j_index][i_index] > 1:
-                raise PropertyValue("La contributions")
+            # Constraint: Total quantity
+            model.addConstr(
+                sum(x[i] for i in range(n)) == total_quantity,
+                "Total_Quantity"
+            )
 
-    # Limites minimales et maximales des propriétés
-    for j_index, property in enumerate(property_min):
-        try:
-            if property == "":
-                property = 0
-            property_min[j_index] = float(property)
-        except ValueError:
-            raise NumericalType("La valeur minimale de la propriété")
-        if property_min[j_index] < 0 or property_min[j_index] > 1:
-            raise PropertyValue("La valeur minimale de la propriété")
-        
-    for j_index, property in enumerate(property_max):
-        try:
-            if property == "":
-                property = 1
-            property_max[j_index] = float(property)
-        except ValueError:
-            raise NumericalType("La valeur maximale de la propriété")
-        if property_max[j_index] < 0 or property_max[j_index] > 1:
-            raise PropertyValue("La valeur maximale de la propriété")
+            # Constraints: Availability of ingredients
+            for i in range(n):
+                model.addConstr(
+                    x[i] <= ingredients[i]['available_quantity'],
+                    f"Availability_{i}"
+                )
 
+            # Constraints: Property bounds
+            for prop_name in properties:
+                prop_contribution = sum(
+                    x[i] * ingredients[i]['properties'][prop_name] for i in range(n)
+                )
+                min_bound = property_bounds[prop_name]['min'] * total_quantity
+                max_bound = property_bounds[prop_name]['max'] * total_quantity
 
-    # Quantité totale du mélange
-    try:
-        total_quantity = float(total_quantity)
-    except ValueError:
-        raise NumericalType("La quantité totale")
-    if total_quantity < 0:
-        raise NegativeValueError(total_quantity,"La quantité totale")
-    
+                # Debug constraints
+                print(f"Property: {prop_name}, Min Bound: {min_bound}, Max Bound: {max_bound}")
 
-    # **Variables de décision**
-    x = model.addVars(n, lb=0, name="IngredientQuantity")
+                model.addConstr(prop_contribution >= min_bound, f"{prop_name}_Min")
+                model.addConstr(prop_contribution <= max_bound, f"{prop_name}_Max")
 
-    # **Fonction objectif**
-    model.setObjective(sum(costs[i] * x[i] for i in range(n)), GRB.MINIMIZE)
+            # Solve the model
+            model.optimize()
 
-    # **Contraintes**
-    # Quantité totale
-    model.addConstr(sum(x[i] for i in range(n)) == total_quantity, "TotalQuantity")
+            # Check solution status
+            if model.status == GRB.OPTIMAL:
+                results = {
+                    'status': 'Optimal Solution Found',
+                    'total_cost': model.objVal,
+                    'ingredient_quantities': {},
+                    'property_totals': {}
+                }
 
-    # Contraintes de propriétés (qualité)
-    for j in range(m):
-        model.addConstr(
-            sum(contributions[j][i] * x[i] for i in range(n)) >= property_min[j] * total_quantity,
-            f"Property{j+1}_Min"
-        )
-        model.addConstr(
-            sum(contributions[j][i] * x[i] for i in range(n)) <= property_max[j] * total_quantity,
-            f"Property{j+1}_Max"
-        )
+                for i in range(n):
+                    results['ingredient_quantities'][ingredients[i]['name']] = x[i].x
 
-    # Résoudre le modèle
-    model.optimize()
+                for prop_name in properties:
+                    prop_total = sum(
+                        x[i].x * ingredients[i]['properties'][prop_name] for i in range(n)
+                    )
+                    results['property_totals'][prop_name] = prop_total
 
-    # **Afficher les résultats**
-    if model.status == GRB.OPTIMAL:
-        print("\nSolution optimale trouvée :")
-        results = {}
-        for i in range(n):
-            print(f"Ingrédient {i+1} : {x[i].x:.2f} kg")
-            results[f"Ingredient {i+1}"] = x[i].x
-        print(f"Coût total : {model.objVal:.2f} €")
-        results["Total Cost"] = model.objVal
-    else:
-        print("Aucune solution optimale trouvée.")
-        results = None
-    return results
+                return results
+            else:
+                return {'status': 'No optimal solution found'}
+        except Exception as e:
+            return {
+                'status': 'Error',
+                'message': str(e),
+                'traceback': traceback.format_exc()  # For debugging
+            }

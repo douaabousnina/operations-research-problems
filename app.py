@@ -1,100 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from gurobipy import Model, GRB
 import traceback
 from PL2.main import solve_graph_coloring
 from test import render_graph
+from PL1.main import solve_blending_problem
+from PL3.main import solve_multi_product_inventory
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Required for using session data
 
-class BlendingProblemSolver:
-    @staticmethod
-    def solve_blending_problem(ingredients, properties, property_bounds, total_quantity):
-        try:
-            # Validate inputs
-            if not ingredients or not properties or not property_bounds:
-                raise ValueError("Ingredients, properties, or property bounds are missing or empty.")
-            if total_quantity <= 0:
-                raise ValueError("Total quantity must be greater than zero.")
-            for ingredient in ingredients:
-                if not all(k in ingredient for k in ['name', 'cost_per_unit', 'available_quantity', 'properties']):
-                    raise ValueError(f"Ingredient {ingredient} is missing required fields.")
-            
-            # Create Gurobi model
-            model = Model("Blending Problem")
-            model.setParam('OutputFlag', 0)  # Suppress solver output
-            
-            # Number of ingredients
-            n = len(ingredients)
-
-            # Decision variables: quantity of each ingredient
-            x = model.addVars(n, lb=0, name="ingredient_quantity")
-
-            # Objective: Minimize total cost
-            model.setObjective(
-                sum(x[i] * ingredients[i]['cost_per_unit'] for i in range(n)),
-                GRB.MINIMIZE
-            )
-
-            # Constraint: Total quantity
-            model.addConstr(
-                sum(x[i] for i in range(n)) == total_quantity,
-                "Total_Quantity"
-            )
-
-            # Constraints: Availability of ingredients
-            for i in range(n):
-                model.addConstr(
-                    x[i] <= ingredients[i]['available_quantity'],
-                    f"Availability_{i}"
-                )
-
-            # Constraints: Property bounds
-            for prop_name in properties:
-                prop_contribution = sum(
-                    x[i] * ingredients[i]['properties'][prop_name] for i in range(n)
-                )
-                min_bound = property_bounds[prop_name]['min'] * total_quantity
-                max_bound = property_bounds[prop_name]['max'] * total_quantity
-
-                # Debug constraints
-                print(f"Property: {prop_name}, Min Bound: {min_bound}, Max Bound: {max_bound}")
-
-                model.addConstr(prop_contribution >= min_bound, f"{prop_name}_Min")
-                model.addConstr(prop_contribution <= max_bound, f"{prop_name}_Max")
-
-            # Solve the model
-            model.optimize()
-
-            # Check solution status
-            if model.status == GRB.OPTIMAL:
-                results = {
-                    'status': 'Optimal Solution Found',
-                    'total_cost': model.objVal,
-                    'ingredient_quantities': {},
-                    'property_totals': {}
-                }
-
-                for i in range(n):
-                    results['ingredient_quantities'][ingredients[i]['name']] = x[i].x
-
-                for prop_name in properties:
-                    prop_total = sum(
-                        x[i].x * ingredients[i]['properties'][prop_name] for i in range(n)
-                    )
-                    results['property_totals'][prop_name] = prop_total
-
-                return results
-            else:
-                return {'status': 'No optimal solution found'}
-        except Exception as e:
-            return {
-                'status': 'Error',
-                'message': str(e),
-                'traceback': traceback.format_exc()  # For debugging
-            }
-
-# Flask Routes
 
 @app.route('/PL1', methods=['GET', 'POST'])
 def index():
@@ -191,8 +105,8 @@ def input_property_bounds():
         session['property_bounds'] = property_bounds
 
         # Solve the blending problem
-        solver = BlendingProblemSolver()
-        result = solver.solve_blending_problem(
+        
+        result = solve_blending_problem(
             session.get('ingredients', []),
             property_names,
             property_bounds,
@@ -209,9 +123,13 @@ def solution():
     result = session.get('result', {})
     return render_template('solve.html', result=result)
 
+
+
 @app.route('/')
 def home():
     return render_template('index.html')
+
+
 
 @app.route("/PL2", methods=["GET", "POST"])
 def index2():
@@ -244,6 +162,65 @@ def index2():
         print(solution, num_colors)
         return render_template("result.html",solution=solution, num_colors=num_colors)
     return render_template("index2.html")
+
+
+@app.route('/PL3', methods=['GET', 'POST'])
+def PL3():
+    if request.method == 'GET':
+        # Render the multi-step form page when the user visits the page
+        return render_template('PL3.html')
+    
+    elif request.method == 'POST':
+        # Handle form submission, expect JSON input
+        try:
+            
+            data = request.get_json()  # Get the data sent by the client
+            print(data)
+            
+            periods = data['periods']
+            products = data['products']
+            demands = data['demands']  # A dictionary of product-period keys and their demand values
+            holding_costs = data['holding_costs']
+            ordering_costs = data['ordering_costs']
+            setup_costs = data['setup_costs']
+            expiration_periods = data['expiration_periods']
+            capacities = data['capacities']
+            shared_capacity = data.get('shared_capacity', None)
+
+            # Process the data here as needed
+            # Example: You can access demand for a specific product-period combination
+            demand = demands.get('Product1-Period1', 0)  # Default to 0 if not found
+            
+            # Solve the optimization problem using the provided data
+            order_quantities, inventory_levels, total_cost = solve_multi_product_inventory(
+                periods=periods,
+                products=products,
+                demands=demands,
+                holding_costs=holding_costs,
+                ordering_costs=ordering_costs,
+                setup_costs=setup_costs,
+                capacities=capacities,
+                expiration_periods=expiration_periods,
+                shared_capacity=shared_capacity
+            )
+            print(order_quantities, inventory_levels, total_cost)
+            
+            # Check if the optimization is successful
+            if order_quantities is None:
+                return jsonify({"status": "error", "message": "Optimization failed"}), 400
+            
+            # Render the result page with the solution data
+            return render_template(
+                'resultPL3.html',  # Display results in resultPL3.html
+                order_quantities = order_quantities,
+                inventory_levels = inventory_levels,
+                total_cost = total_cost
+            )
+        
+        except Exception as e:
+            return jsonify({"status": "error", "message": str(e)}), 400
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
