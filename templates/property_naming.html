@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Property Naming</title>
-    <link rel="stylesheet" href="static/style2.css">
+    <link rel="stylesheet" href="static/styles.css">
 </head>
+
 <body>
     <button id="gg" class="back-button" onclick="navigateTo('/')">Acceuil</button>
-    <div class="container">
-    <h1>Name the Properties</h1>
-    <form method="POST">
-        {% for i in range(num_properties) %}
-            <label for="property_name_{{ i }}">Property {{ i + 1 }} Name:</label>
-            <input type="text" id="property_name_{{ i }}" name="property_name_{{ i }}" required>
-            <br>
-        {% endfor %}
-        <div class="form-group" style="display: flex;justify-content: center;gap: 0px;">
-           
-            <button onclick="navigateTo('/input_ingredients')">Previous</button>
-            <button type="submit">Next</button> 
+    <div class="flex-container">
+        <div class="container">
+            <h1>Name the Properties</h1>
+            <form method="POST">
+                {% for i in range(num_properties) %}
+                <label for="property_name_{{ i }}">Property {{ i + 1 }} Name:</label>
+                <input type="text" id="property_name_{{ i }}" name="property_name_{{ i }}" required>
+                <br>
+                {% endfor %}
+                <div class="form-group" style="display: flex;justify-content: center;gap: 0px;">
+
+                    <button onclick="navigateTo('/input_ingredients')">Previous</button>
+                    <button type="submit">Next</button>
+                </div>
+            </form>
         </div>
-    </form>
     </div>
 </body>
 <script>
@@ -27,4 +31,5 @@
         window.location.href = url;
     }
 </script>
+
 </html>

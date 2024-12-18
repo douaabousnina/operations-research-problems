@@ -1,26 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory Optimization - Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
-    <h1>Optimization Results</h1>
-    <h2>Total Cost: {{ total_cost }}</h2>
+    <button id="gg" onclick="window.location.href = '/'">Acceuil</button>
+    <div class="flex-container">
+        <div class="container">
+            <h1>Optimization Results</h1>
+            <h2>Total Cost: {{ total_cost }}</h2>
 
-    <h3>Order Quantities</h3>
-    <ul>
-        {% for (product, period), quantity in order_quantities.items() %}
-            <li>Product {{ product }}, Period {{ period }}: {{ quantity }}</li>
-        {% endfor %}
-    </ul>
+            <h3>Order Quantities</h3>
+            <ul>
+                {% for (product, period), quantity in order_quantities.items() %}
+                <li>Product {{ product }}, Period {{ period }}: {{ quantity }}</li>
+                {% endfor %}
+            </ul>
 
-    <h3>Inventory Levels</h3>
-    <ul>
-        {% for (product, period), level in inventory_levels.items() %}
-            <li>Product {{ product }}, Period {{ period }}: {{ level }}</li>
-        {% endfor %}
-    </ul>
+            <h3>Inventory Levels</h3>
+            <ul>
+                {% for (product, period), level in inventory_levels.items() %}
+                <li>Product {{ product }}, Period {{ period }}: {{ level }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </body>
+
 </html>

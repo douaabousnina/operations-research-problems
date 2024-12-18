@@ -1,285 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>Inventory Optimization - Input Details</title>
-    <style>
-        :root {
-            --primary-color: #2563eb;
-            --primary-hover: #1d4ed8;
-            --error-color: #dc2626;
-            --border-color: #e5e7eb;
-            --background-grey: #f3f4f6;
-            --text-primary: #111827;
-            --text-secondary: #4b5563;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text-primary);
-            background-color: var(--background-grey);
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            color: var(--text-primary);
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-        }
-
-        h3 {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .error {
-            background-color: #fef2f2;
-            border: 1px solid #fee2e2;
-            color: var(--error-color);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .product-section {
-            background: white;
-            border: 1px solid var(--border-color);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.3s ease;
-        }
-
-        .product-section:hover {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .demand-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            background-color: white;
-        }
-
-        input[type="number"]:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        input[type="number"]:hover {
-            border-color: var(--primary-color);
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            width: 100%;
-            max-width: 200px;
-            transition: background-color 0.3s ease, transform 0.1s ease;
-            display: block;
-            margin: 2rem auto;
-        }
-
-        button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-
-            .product-section {
-                padding: 1.5rem;
-            }
-
-            .demand-grid {
-                grid-template-columns: 1fr;
-            }
-
-            input[type="number"] {
-                font-size: 16px; /* Prevents zoom on mobile */
-            }
-        }
-
-        /* Custom number input arrows */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            opacity: 1;
-            height: 30px;
-            cursor: pointer;
-        }
-    </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>Step 3: Provide Input Details</h1>
-        
-        {% if error %}
+    <button id="gg" onclick="window.location.href = '/'">Acceuil</button>
+    <div class="flex-container">
+        <div class="container">
+            <h1>Step 3: Provide Input Details</h1>
+
+            {% if error %}
             <div class="error">{{ error }}</div>
-        {% endif %}
+            {% endif %}
 
-        <form method="POST" onsubmit="return validateForm()">
-            {% for p in range(products) %}
-            <div class="product-section">
-                <h2>{{ product_names[p] }}</h2>
-                
-                <h3>Demands</h3>
-                <div class="demand-grid">
-                    {% for t in range(periods) %}
-                    <div class="form-group">
-                        <label for="demand_{{ p }}_{{ t }}">Period {{ t + 1 }}:</label>
-                        <input type="number" 
-                               id="demand_{{ p }}_{{ t }}" 
-                               name="demand_{{ p }}_{{ t }}" 
-                               step="any"
-                               min="0"
-                               required>
+            <form method="POST" onsubmit="return validateForm()">
+                {% for p in range(products) %}
+                <div class="product-section">
+                    <h2>{{ product_names[p] }}</h2>
+
+                    <h3>Demands</h3>
+                    <div class="demand-grid">
+                        {% for t in range(periods) %}
+                        <div class="form-group">
+                            <label for="demand_{{ p }}_{{ t }}">Period {{ t + 1 }}:</label>
+                            <input type="number" id="demand_{{ p }}_{{ t }}" name="demand_{{ p }}_{{ t }}" step="any"
+                                min="0" required>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+
+                    <div class="form-group">
+                        <label for="holding_cost_{{ p }}">Holding Cost:</label>
+                        <input type="number" id="holding_cost_{{ p }}" name="holding_cost_{{ p }}" step="any" min="0"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ordering_cost_{{ p }}">Ordering Cost:</label>
+                        <input type="number" id="ordering_cost_{{ p }}" name="ordering_cost_{{ p }}" step="any" min="0"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="setup_cost_{{ p }}">Setup Cost:</label>
+                        <input type="number" id="setup_cost_{{ p }}" name="setup_cost_{{ p }}" step="any" min="0"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="capacity_{{ p }}">Capacity:</label>
+                        <input type="number" id="capacity_{{ p }}" name="capacity_{{ p }}" step="any" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expiration_{{ p }}">Expiration Period (in days):</label>
+                        <input type="number" id="expiration_{{ p }}" name="expiration_{{ p }}" min="0" required>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="product-section">
+                    <h2>Global Settings</h2>
+                    <div class="form-group">
+                        <label for="shared_capacity">Shared Capacity (Optional):</label>
+                        <input type="number" id="shared_capacity" name="shared_capacity" min="0" step="any">
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="holding_cost_{{ p }}">Holding Cost:</label>
-                    <input type="number" 
-                           id="holding_cost_{{ p }}" 
-                           name="holding_cost_{{ p }}" 
-                           step="any"
-                           min="0"
-                           required>
-                </div>
-
-                <div class="form-group">
-                    <label for="ordering_cost_{{ p }}">Ordering Cost:</label>
-                    <input type="number" 
-                           id="ordering_cost_{{ p }}" 
-                           name="ordering_cost_{{ p }}" 
-                           step="any"
-                           min="0"
-                           required>
-                </div>
-
-                <div class="form-group">
-                    <label for="setup_cost_{{ p }}">Setup Cost:</label>
-                    <input type="number" 
-                           id="setup_cost_{{ p }}" 
-                           name="setup_cost_{{ p }}" 
-                           step="any"
-                           min="0"
-                           required>
-                </div>
-
-                <div class="form-group">
-                    <label for="capacity_{{ p }}">Capacity:</label>
-                    <input type="number" 
-                           id="capacity_{{ p }}" 
-                           name="capacity_{{ p }}" 
-                           step="any"
-                           min="0"
-                           required>
-                </div>
-
-                <div class="form-group">
-                    <label for="expiration_{{ p }}">Expiration Period (in days):</label>
-                    <input type="number" 
-                           id="expiration_{{ p }}" 
-                           name="expiration_{{ p }}" 
-                           min="0"
-                           required>
-                </div>
-            </div>
-            {% endfor %}
-
-            <div class="product-section">
-                <h2>Global Settings</h2>
-                <div class="form-group">
-                    <label for="shared_capacity">Shared Capacity (Optional):</label>
-                    <input type="number" 
-                           id="shared_capacity" 
-                           name="shared_capacity" 
-                           min="0"
-                           step="any">
-                </div>
-            </div>
-
-            <button type="submit">Optimize</button>
-        </form>
+                <button type="submit">Optimize</button>
+            </form>
+        </div>
     </div>
-
-    <script>
-        // function validateForm() {
-        //     const inputs = document.querySelectorAll('input[type="number"]');
-        //     for (let input of inputs) {
-        //         if (input.hasAttribute('required') && !input.value) {
-        //             alert('Please fill in all required fields.');
-        //             input.focus();
-        //             return false;
-        //         }
-        //         if (input.value && input.value < 0) {
-        //             alert('All values must be non-negative.');
-        //             input.focus();
-        //             return false;
-        //         }
-        //     }
-        //     return true;
-        // }
-    </script>
 </body>
+
 </html>

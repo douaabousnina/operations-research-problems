@@ -1,3 +1,4 @@
+import traceback
 from gurobipy import Model, GRB
 
 

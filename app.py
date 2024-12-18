@@ -208,15 +208,6 @@ def PL3_details():
         expiration_periods = {p: int(request.form[f'expiration_{p}']) for p in range(products)}
         shared_capacity = float(request.form['shared_capacity']) if 'shared_capacity' in request.form else None
 
-        print(demands)
-        print(holding_costs)
-        print(ordering_costs)
-        print(setup_costs)
-        print(capacities)
-        print(expiration_periods)
-        print(shared_capacity)
-
-
         order_quantities, inventory_levels, total_cost = solve_multi_product_inventory(
             periods, products, demands, holding_costs, ordering_costs,
             setup_costs, capacities, expiration_periods, shared_capacity
