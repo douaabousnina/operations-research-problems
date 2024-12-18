@@ -10,24 +10,25 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Required for using session data
 
 
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+
 @app.route('/PL1', methods=['GET', 'POST'])
-def index():
-    """Initial page to set up problem parameters"""
+def PL1():
     if request.method == 'POST':
-        # Store problem parameters in session
         session['num_ingredients'] = int(request.form['num_ingredients'])
         session['num_properties'] = int(request.form['num_properties'])
         session['total_quantity'] = float(request.form['total_quantity'])
-        return redirect(url_for('input_ingredients'))
-    return render_template('PL1.html')
+        return redirect(url_for('PL1_input_ingredients'))
+    return render_template('PL1/index.html')
 
 @app.route('/input_ingredients', methods=['GET', 'POST'])
-def input_ingredients():
-    """Page to input ingredient details"""
+def PL1_input_ingredients():
     num_ingredients = session.get('num_ingredients', 0)
 
     if request.method == 'POST':
-        # Collect ingredient data
         ingredients = []
         for i in range(num_ingredients):
             try:
@@ -44,57 +45,51 @@ def input_ingredients():
                                        error=f"Invalid input for ingredient {i}: {str(e)}")
         
         session['ingredients'] = ingredients
-        return redirect(url_for('property_naming'))
+        return redirect(url_for('PL1_property_naming'))
     
-    return render_template('input_ingredients.html', num_ingredients=num_ingredients)
+    return render_template('PL1/input_ingredients.html', num_ingredients=num_ingredients)
 
 @app.route('/property_naming', methods=['GET', 'POST'])
-def property_naming():
-    """Page to name the properties before inputting their percentages"""
+def PL1_property_naming():
     num_properties = session.get('num_properties', 0)
 
     if request.method == 'POST':
-        # Collect property names
         property_names = [request.form[f'property_name_{i}'] for i in range(num_properties)]
         session['property_names'] = property_names
-        return redirect(url_for('input_properties'))
+        return redirect(url_for('PL1_input_properties'))
     
-    return render_template('property_naming.html', num_properties=num_properties)
+    return render_template('PL1/property_naming.html', num_properties=num_properties)
 
 @app.route('/input_properties', methods=['GET', 'POST'])
-def input_properties():
+def PL1_input_properties():
     num_properties = session.get('num_properties', 0)
-    """Page to input property details for ingredients"""
     num_ingredients = session.get('num_ingredients', 0)
     ingredients = session.get('ingredients', [])
     property_names = session.get('property_names', [])
 
     if request.method == 'POST':
-        # Collect property data for ingredients
         for i, ingredient in enumerate(ingredients):
             for j, prop_name in enumerate(property_names):
                 prop_value = float(request.form[f'ingredient_{i}_property_{j}'])
                 ingredient['properties'][prop_name] = prop_value
         session['ingredients'] = ingredients
-        return redirect(url_for('input_property_bounds'))
+        return redirect(url_for('PL1_input_property_bounds'))
     
     return render_template(
-        'input_properties.html', 
+        'PL1/input_properties.html', 
         num_ingredients=num_ingredients, 
         num_properties=num_properties,
         ingredients=ingredients,
         property_names=property_names,
-        enumerate=enumerate  # Pass enumerate to the template
+        enumerate=enumerate
     )
 
 @app.route('/input_property_bounds', methods=['GET', 'POST'])
-def input_property_bounds():
-    """Page to set property bounds for final product"""
+def PL1_input_property_bounds():
     property_names = session.get('property_names', [])
     total_quantity = session.get('total_quantity', 0)
 
     if request.method == 'POST':
-        # Collect property bounds
         property_bounds = {
             prop: {
                 'min': float(request.form[f'{prop}_min']),
@@ -104,8 +99,6 @@ def input_property_bounds():
         }
         session['property_bounds'] = property_bounds
 
-        # Solve the blending problem
-        
         result = solve_blending_problem(
             session.get('ingredients', []),
             property_names,
@@ -113,55 +106,44 @@ def input_property_bounds():
             total_quantity
         )
         session['result'] = result
-        return redirect(url_for('solution'))
+        return redirect(url_for('PL1_solution'))
 
-    return render_template('input_property_bounds.html', property_names=property_names, total_quantity=total_quantity)
+    return render_template('PL1/input_property_bounds.html', property_names=property_names, total_quantity=total_quantity)
 
 @app.route('/solution')
-def solution():
-    """Display optimization results"""
+def PL1_solution():
     result = session.get('result', {})
-    return render_template('solve.html', result=result)
-
-
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
+    return render_template('PL1/result.html', result=result)
 
 
 @app.route("/PL2", methods=["GET", "POST"])
-def index2():
+def PL2():
     if request.method == "POST":
-        # Get the number of vertices and edges
         try:
             num_vertices = int(request.form["num_vertices"])
             num_edges = int(request.form["num_edges"])
             if num_vertices < 0 or num_edges < 0:
                 raise ValueError
         except ValueError:
-            return render_template("index2.html", error="Please enter a valid number of vertices and edges.")
+            return render_template("PL2/index.html", error="Please enter a valid number of vertices and edges.")
             
-        # Parse edges
         try:
             edges = []
             for i in range(num_edges):
                 edge = request.form[f"edge_{i}"].split()
                 edges.append((int(edge[0]), int(edge[1])))
         except (IndexError, ValueError, KeyError):
-            return render_template("index2.html", error="Please enter valid edges.")
+            return render_template("PL2/index.html", error="Please enter valid edges.")
 
-        # Solve the graph coloring problem
         try: 
             solution, num_colors = solve_graph_coloring(num_vertices, edges)
             render_graph(edges, solution)
         except Exception as e:
-            return render_template("index2.html", error="No solution. Please check your input.")
+            return render_template("PL2/index.html", error="No solution. Please check your input.")
   
         print(solution, num_colors)
-        return render_template("result.html",solution=solution, num_colors=num_colors)
-    return render_template("index2.html")
+        return render_template("PL2/result.html",solution=solution, num_colors=num_colors)
+    return render_template("PL2/index.html")
 
 
 
@@ -176,7 +158,7 @@ def PL3():
         # Redirect to the product names page
         return redirect(url_for('PL3_names', periods=periods, products=products))
 
-    return render_template('PL3.html')
+    return render_template('PL3/index.html')
 
 
 @app.route('/PL3/names', methods=['GET', 'POST'])
@@ -189,7 +171,7 @@ def PL3_names():
         product_names = [request.form[f'product_name_{i}'] for i in range(1, products + 1)]
         return redirect(url_for('PL3_details', periods=periods, products=products, product_names=','.join(product_names)))
 
-    return render_template('PL3_names.html', periods=periods, products=products)
+    return render_template('PL3/names.html', periods=periods, products=products)
 
 
 @app.route('/PL3/details', methods=['GET', 'POST'])
@@ -214,15 +196,15 @@ def PL3_details():
         )
 
         if order_quantities is None:
-            return render_template('PL3_details.html', error="Optimization failed.", periods=periods, products=products, product_names=product_names)
+            return render_template('PL3/details.html', error="Optimization failed.", periods=periods, products=products, product_names=product_names)
 
-        return render_template('PL3_results.html', 
+        return render_template('PL3/result.html', 
                                order_quantities=order_quantities, 
                                inventory_levels=inventory_levels, 
                                total_cost=total_cost,
                                product_names=product_names)
 
-    return render_template('PL3_details.html', periods=periods, products=products, product_names=product_names)
+    return render_template('PL3/details.html', periods=periods, products=products, product_names=product_names)
 
 
 
