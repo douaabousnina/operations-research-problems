@@ -190,6 +190,7 @@
                                id="demand_{{ p }}_{{ t }}" 
                                name="demand_{{ p }}_{{ t }}" 
                                step="any"
+                               min="0"
                                required>
                     </div>
                     {% endfor %}
@@ -201,6 +202,7 @@
                            id="holding_cost_{{ p }}" 
                            name="holding_cost_{{ p }}" 
                            step="any"
+                           min="0"
                            required>
                 </div>
 
@@ -210,6 +212,7 @@
                            id="ordering_cost_{{ p }}" 
                            name="ordering_cost_{{ p }}" 
                            step="any"
+                           min="0"
                            required>
                 </div>
 
@@ -219,6 +222,7 @@
                            id="setup_cost_{{ p }}" 
                            name="setup_cost_{{ p }}" 
                            step="any"
+                           min="0"
                            required>
                 </div>
 
@@ -228,6 +232,7 @@
                            id="capacity_{{ p }}" 
                            name="capacity_{{ p }}" 
                            step="any"
+                           min="0"
                            required>
                 </div>
 
@@ -236,7 +241,7 @@
                     <input type="number" 
                            id="expiration_{{ p }}" 
                            name="expiration_{{ p }}" 
-                           min="1"
+                           min="0"
                            required>
                 </div>
             </div>
@@ -249,6 +254,7 @@
                     <input type="number" 
                            id="shared_capacity" 
                            name="shared_capacity" 
+                           min="0"
                            step="any">
                 </div>
             </div>
@@ -258,22 +264,22 @@
     </div>
 
     <script>
-        function validateForm() {
-            const inputs = document.querySelectorAll('input[type="number"]');
-            for (let input of inputs) {
-                if (input.hasAttribute('required') && !input.value) {
-                    alert('Please fill in all required fields.');
-                    input.focus();
-                    return false;
-                }
-                if (input.value && input.value < 0) {
-                    alert('All values must be non-negative.');
-                    input.focus();
-                    return false;
-                }
-            }
-            return true;
-        }
+        // function validateForm() {
+        //     const inputs = document.querySelectorAll('input[type="number"]');
+        //     for (let input of inputs) {
+        //         if (input.hasAttribute('required') && !input.value) {
+        //             alert('Please fill in all required fields.');
+        //             input.focus();
+        //             return false;
+        //         }
+        //         if (input.value && input.value < 0) {
+        //             alert('All values must be non-negative.');
+        //             input.focus();
+        //             return false;
+        //         }
+        //     }
+        //     return true;
+        // }
     </script>
 </body>
 </html>
