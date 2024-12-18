@@ -2,13 +2,11 @@
 <html>
 <head>
     <title>Blending Problem Solution</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-        .solution-section { background: #f4f4f4; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
-        .error { color: red; }
-    </style>
+    <link rel="stylesheet" href="static/style2.css">
 </head>
 <body>
+    <button id="gg" onclick="navigateTo('/')">Acceuil</button>
+    <div class="container">
     <h1>Blending Problem Solution</h1>
     
     {% if result.status == 'Optimal Solution Found' %}
@@ -37,5 +35,16 @@
     {% else %}
         <p class="error">No optimal solution found. Please check your input data.</p>
     {% endif %}
+    
+    <div class="form-group" style="display: flex;justify-content: center;gap: 0px;margin-right: 12px;">
+           
+        <button onclick="navigateTo('/PL1')">Solve Another Problem</button>
+    </div>
+        </div>
 </body>
+<script>
+    function navigateTo(url) {
+        window.location.href = url;
+    }
+</script>
 </html>

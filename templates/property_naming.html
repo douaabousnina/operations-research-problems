@@ -2,14 +2,11 @@
 <html>
 <head>
     <title>Property Naming</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-        .property-section { background: #f4f4f4; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
-        input { margin: 5px 0; width: 100%; padding: 5px; }
-        button { width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
-    </style>
+    <link rel="stylesheet" href="static/style2.css">
 </head>
 <body>
+    <button id="gg" class="back-button" onclick="navigateTo('/')">Acceuil</button>
+    <div class="container">
     <h1>Name the Properties</h1>
     <form method="POST">
         {% for i in range(num_properties) %}
@@ -17,7 +14,17 @@
             <input type="text" id="property_name_{{ i }}" name="property_name_{{ i }}" required>
             <br>
         {% endfor %}
-        <button type="submit">Next</button>
+        <div class="form-group" style="display: flex;justify-content: center;gap: 0px;">
+           
+            <button onclick="navigateTo('/input_ingredients')">Previous</button>
+            <button type="submit">Next</button> 
+        </div>
     </form>
+    </div>
 </body>
+<script>
+    function navigateTo(url) {
+        window.location.href = url;
+    }
+</script>
 </html>

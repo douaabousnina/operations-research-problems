@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Input Ingredients</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-        .ingredient-section { background: #f4f4f4; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
-        input { margin: 5px 0; width: 100%; padding: 5px; }
-        button { width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PL1 Setup</title>
+    <link rel="stylesheet" href="static/style2.css">
 </head>
 <body>
-    <h1>Input Ingredient Details</h1>
+    <button id="gg" onclick="navigateTo('/')">Acceuil</button>
+    <div class="container">
+        <h1>Input Ingredient Details</h1>
     <form method="post">
         {% for i in range(num_ingredients) %}
             <div class="ingredient-section">
@@ -26,7 +25,17 @@
             </div>
         {% endfor %}
         
-        <button type="submit">Next</button>
+        <div class="form-group" style="display: flex;justify-content: center;gap: 0px;">
+           
+            <button onclick="navigateTo('/PL1')">Previous</button>
+            <button type="submit">Next</button> 
+        </div>
     </form>
+    </div>
+    <script>
+        function navigateTo(url) {
+            window.location.href = url;
+        }
+    </script>
 </body>
 </html>

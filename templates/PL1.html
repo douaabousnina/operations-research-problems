@@ -4,71 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PL1 Setup</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            text-align: center;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            width: 400px;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-size: 1rem;
-            color: #555;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 5px;
-        }
-
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            width: 100%;
-            border-radius: 5px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
+    <link rel="stylesheet" href="static/style2.css">
     </style>
 </head>
 <body>
+    <button id="gg" onclick="navigateTo('/')">Acceuil</button>
     <div class="container">
         <h1>Blending Problem Setup</h1>
         <form method="POST">
@@ -84,8 +24,14 @@
                 <label for="total_quantity">Total Quantity:</label>
                 <input type="number" step="any" name="total_quantity" id="total_quantity" required>
             </div>
+            
             <button type="submit">Next</button>
         </form>
     </div>
 </body>
+<script>
+    function navigateTo(url) {
+        window.location.href = url;
+    }
+</script>
 </html>
