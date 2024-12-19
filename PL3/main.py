@@ -2,10 +2,10 @@ import gurobipy as gp
 from gurobipy import GRB
 
 def solve_multi_product_inventory(periods, products, demands, holding_costs, ordering_costs, 
-                                  setup_costs, capacities, expiration_periods, shared_capacity=None, initial_inventory=None):
+                                setup_costs, capacities, expiration_periods, shared_capacity=None, initial_inventory=None):
     """
-    Solve a multi-period, multi-product inventory optimization problem with expiration dates,
-    treating inventory levels as an input.
+    Solve a multi-period, multi-product inventory optimization problem with expiration dates.
+    Inventory levels are calculated from order quantities and demands.
 
     Parameters:
     periods (int): Number of time periods
@@ -23,51 +23,69 @@ def solve_multi_product_inventory(periods, products, demands, holding_costs, ord
         model = gp.Model("Multi_Product_Inventory_Optimization")
         
         # Decision Variables
-        order = model.addVars(products, periods, lb=0, vtype=GRB.CONTINUOUS, name="order")
-        y = model.addVars(products, periods, vtype=GRB.BINARY, name="setup")
-        inventory = model.addVars(products, periods, lb=0, vtype=GRB.CONTINUOUS, name="inventory")
+        # Order quantities for each product in each period
+        order = model.addVars([(p, t) for p in range(products) for t in range(periods)],
+                            lb=0, vtype=GRB.CONTINUOUS, name="order")
+        # Binary variable for setup costs
+        y = model.addVars([(p, t) for p in range(products) for t in range(periods)],
+                         vtype=GRB.BINARY, name="setup")
+        # Variable tracking inventory age
+        inv_age = model.addVars([(p, t, a) for p in range(products) 
+                                for t in range(periods) 
+                                for a in range(expiration_periods[p])],
+                              lb=0, vtype=GRB.CONTINUOUS, name="inventory_age")
         
-        # Objective Function: Minimize total costs (ordering and setup)
+        # Objective Function: Minimize total costs (ordering, setup, and holding)
         obj = (gp.quicksum(ordering_costs[p] * order[p, t] + 
-                           setup_costs[p] * y[p, t] 
-                           for p in range(products) 
-                           for t in range(periods)))
+                          setup_costs[p] * y[p, t] +
+                          holding_costs[p] * gp.quicksum(inv_age[p, t, a] 
+                                                       for a in range(expiration_periods[p]))
+                          for p in range(products) 
+                          for t in range(periods)))
         model.setObjective(obj, GRB.MINIMIZE)
         
-        # Inventory balance constraints
+        # Constraints
         for p in range(products):
-            # Initial inventory constraint for period 0
-            model.addConstr(
-                inventory[p, 0] == initial_inventory.get(p, 0) + order[p, 0] - demands.get((p, 0), 0)
-            )
-            # Inventory flow constraints for subsequent periods
+            shelf_life = expiration_periods[p]
+            
+            # Initial period constraints
+            model.addConstr(inv_age[p, 0, 0] == initial_inventory.get(p, 0) + order[p, 0] - demands.get((p, 0), 0))
+            for a in range(1, shelf_life):
+                model.addConstr(inv_age[p, 0, a] == 0)
+                
+            # Subsequent periods
             for t in range(1, periods):
-                model.addConstr(
-                    inventory[p, t] == inventory[p, t - 1] + order[p, t] - demands.get((p, t), 0)
-                )
-                # Ensure inventory stays non-negative
-                model.addConstr(inventory[p, t] >= 0)
-        
-        # Expiration constraints
-        for p in range(products):
-            for t in range(periods):
-                if t >= expiration_periods[p]:
-                    start_period = max(0, t - expiration_periods[p] + 1)
-                    total_old_inventory = gp.quicksum(order[p, k] for k in range(start_period, t+1))
-                    model.addConstr(inventory[p, t] <= total_old_inventory)
+                # New inventory (age 0) comes from current period's order
+                model.addConstr(inv_age[p, t, 0] == order[p, t])
+                
+                # Inventory aging and consumption
+                for a in range(1, shelf_life):
+                    # Previous period's inventory of age a-1 becomes age a
+                    model.addConstr(inv_age[p, t, a] == inv_age[p, t-1, a-1])
+                
+                # Demand satisfaction constraint using all available inventory
+                model.addConstr(gp.quicksum(inv_age[p, t-1, a] for a in range(shelf_life)) + 
+                              order[p, t] >= demands.get((p, t), 0))
+                
+                # Ensure oldest inventory is used first (FIFO)
+                for a in range(shelf_life-1):
+                    model.addConstr(inv_age[p, t, a+1] <= inv_age[p, t, a])
         
         # Individual capacity constraints
         for p in range(products):
             for t in range(periods):
-                model.addConstr(inventory[p, t] <= capacities[p])
+                model.addConstr(gp.quicksum(inv_age[p, t, a] 
+                                          for a in range(expiration_periods[p])) <= capacities[p])
         
         # Shared warehouse capacity constraint
         if shared_capacity is not None:
             for t in range(periods):
-                model.addConstr(gp.quicksum(inventory[p, t] for p in range(products)) <= shared_capacity)
+                model.addConstr(gp.quicksum(gp.quicksum(inv_age[p, t, a] 
+                                                       for a in range(expiration_periods[p]))
+                                          for p in range(products)) <= shared_capacity)
         
-        # Setup constraints (order only when y is 1)
-        M = {p: sum(demands[p, t] for t in range(periods)) for p in range(products)}
+        # Setup constraints
+        M = {p: max(demands.get((p, t), 0) for t in range(periods)) * 2 for p in range(products)}
         for p in range(products):
             for t in range(periods):
                 model.addConstr(order[p, t] <= M[p] * y[p, t])
@@ -79,12 +97,11 @@ def solve_multi_product_inventory(periods, products, demands, holding_costs, ord
         if model.Status == GRB.OPTIMAL:
             # Extract results
             order_quantities = {(p, t): order[p, t].X for p in range(products) for t in range(periods)}
-            inventory_levels = {(p, t): inventory[p, t].X for p in range(products) for t in range(periods)}
+            inventory_levels = {(p, t): sum(inv_age[p, t, a].X for a in range(expiration_periods[p])) 
+                              for p in range(products) for t in range(periods)}
             total_cost = model.ObjVal
             
-            print(order_quantities, "\n", inventory_levels, "\n", total_cost)
             return order_quantities, inventory_levels, total_cost
-        
         else:
             print(f"Optimization failed with status {model.Status}")
             return None, None, None
@@ -104,16 +121,16 @@ def print_solution(order_quantities, inventory_levels, total_cost, periods, prod
         
     print("\nOptimal Solution:")
     print("-" * 70)
-    print("Product | Period | Order Quantity | Inventory Level")
+    print("Period | Product | Order Quantity | Inventory Level")
     print("-" * 70)
     
-    for p in range(products):
-        for t in range(periods):
-            print(f"{p+1:7d} | {t+1:6d} | {order_quantities[p, t]:13.2f} | {inventory_levels[p, t]:15.2f}")
+    for t in range(periods):
+        for p in range(products):
+            print(f"{t+1:6d} | {p+1:7d} | {order_quantities[p, t]:13.2f} | {inventory_levels[p, t]:15.2f}")
         print("-" * 70)
     print(f"\nTotal Cost: ${total_cost:,.2f}")
 
-# Example usage
+#  Example usage
 if __name__ == "__main__":
   
     periods = 4
@@ -134,9 +151,9 @@ if __name__ == "__main__":
     holding_costs = {0: 2, 1: 3, 2: 2}          # Holding cost per unit per period
     ordering_costs = {0: 3, 1: 4, 2: 3}         # Cost per unit ordered
     setup_costs = {0: 100, 1: 120, 2: 110}      # Fixed cost per order
-    capacities = {0: 50, 1: 60, 2: 70}          # Individual capacity limits
+    capacities = {0: 150, 1: 160, 2: 70}          # Individual capacity limits
     shared_capacity = 150                       # Total warehouse capacity
-    expiration_periods = {0: 1, 1: 4, 2: 4}     # Shelf life in periods
+    expiration_periods = {0: 4, 1: 1, 2: 1}     # Shelf life in periods
     
     # Initial Inventory: Provided as input (e.g., starting inventory for each product)
     initial_inventory = {0: 5, 1: 10, 2: 20}  # Only per product, not period-specific
@@ -156,4 +173,4 @@ if __name__ == "__main__":
     )
     
     # Display results
-    print_solution(orders, inventory, cost, periods, products)
+    print_solution(orders, inventory, cost, periods, products)    
