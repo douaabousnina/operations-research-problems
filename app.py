@@ -199,11 +199,13 @@ def PL3_details():
         setup_costs = {p: float(request.form[f'setup_cost_{p}']) for p in range(products)}
         capacities = {p: float(request.form[f'capacity_{p}']) for p in range(products)}
         expiration_periods = {p: int(request.form[f'expiration_{p}']) for p in range(products)}
+        initial_inventory = {p: int(request.form[f'initial_inventory_{p}']) for p in range(products)}
         shared_capacity = float(request.form['shared_capacity']) if 'shared_capacity' in request.form else None
 
         order_quantities, inventory_levels, total_cost = solve_multi_product_inventory(
             periods, products, demands, holding_costs, ordering_costs,
-            setup_costs, capacities, expiration_periods, shared_capacity
+            setup_costs, capacities, expiration_periods, shared_capacity,
+            initial_inventory=initial_inventory
         )
 
         if order_quantities is None:

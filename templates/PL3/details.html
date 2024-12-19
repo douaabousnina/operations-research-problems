@@ -61,6 +61,12 @@
                         <label for="expiration_{{ p }}">Expiration Period (in days):</label>
                         <input type="number" id="expiration_{{ p }}" name="expiration_{{ p }}" min="0" required>
                     </div>
+
+                    <div class="form-group">
+                        <label for="initial_inventory_{{ p }}">Initial Inventory:</label>
+                        <input type="number" id="initial_inventory_{{ p }}" name="initial_inventory_{{ p }}" step="any" min="0"
+                            required>
+                    </div>
                 </div>
                 {% endfor %}
 

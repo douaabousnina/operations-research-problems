@@ -153,7 +153,7 @@ if __name__ == "__main__":
     setup_costs = {0: 100, 1: 120, 2: 110}      # Fixed cost per order
     capacities = {0: 150, 1: 160, 2: 70}          # Individual capacity limits
     shared_capacity = 150                       # Total warehouse capacity
-    expiration_periods = {0: 4, 1: 1, 2: 1}     # Shelf life in periods
+    expiration_periods = {0: 1, 1: 1, 2: 1}     # Shelf life in periods
     
     # Initial Inventory: Provided as input (e.g., starting inventory for each product)
     initial_inventory = {0: 5, 1: 10, 2: 20}  # Only per product, not period-specific
