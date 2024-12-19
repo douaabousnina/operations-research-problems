@@ -6,7 +6,7 @@ body {
   justify-content: center;
   align-items: flex-start; /* Align to the top if there's extra space */
   position: relative;
-  background-color: #f1c09d; /* Background color */
+  background-color: #f6fae0; /* Background color */
   overflow-y: auto; /* Allow scrolling if content overflows vertically */
 }
 
