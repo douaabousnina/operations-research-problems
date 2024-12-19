@@ -14,7 +14,7 @@
             align-items: center;
             position: relative;
             overflow: hidden;
-            background-color: #f6fae0; /* Background color */
+            background-color: #f1c09d; /* Background color */
         }
 
         .container {
@@ -94,9 +94,13 @@
 <body>
     <div class="container" id="gg">
         <h1>Projet RO</h1>
-        <button onclick="navigateTo('/PL1')">PL1</button>
-        <button onclick="navigateTo('/PL2')">PL2</button>
-        <button onclick="navigateTo('/PL3')">PL3</button>
+        <div style="display: flex; width: 100%; gap: 10px;">
+            <button style="flex: 1; text-align: center;" onclick="navigateTo('/PL1')">Blending</button>
+            <button style="flex: 1; text-align: center;" onclick="navigateTo('/PL2')">Graph Coloring</button>
+            <button style="flex: 1; text-align: center;" onclick="navigateTo('/PL3')">Inventory Optimization</button>
+        </div>
+        
+        
         {% if error %}
             <p>{{ error }}</p>
         {% endif %}

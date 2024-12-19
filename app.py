@@ -15,11 +15,15 @@ def home():
     return render_template('index.html')
 
 @app.route('/PL2')
-def PL1():
+def PL2():
     return render_template('PL2/intro.html')
 
+@app.route('/PL1')
+def PL1():
+    return render_template('PL1/intro.html')
 
-@app.route('/PL1', methods=['GET', 'POST'])
+
+@app.route('/PL1_start', methods=['GET', 'POST'])
 def PL1_start():
     if request.method == 'POST':
         session['num_ingredients'] = int(request.form['num_ingredients'])
@@ -121,7 +125,7 @@ def PL1_solution():
 
 
 @app.route("/PL2_start", methods=["GET", "POST"])
-def PL2():
+def PL2_start():
     if request.method == "POST":
         try:
             num_vertices = int(request.form["num_vertices"])
@@ -150,10 +154,13 @@ def PL2():
     return render_template("PL2/index.html")
 
 
-
-
-@app.route('/PL3', methods=['GET', 'POST'])
+@app.route('/PL3')
 def PL3():
+    return render_template('PL3/intro.html')
+
+
+@app.route('/PL3_start', methods=['GET', 'POST'])
+def PL3_start():
     if request.method == 'POST':
         # Retrieve number of periods and products
         periods = int(request.form['periods'])

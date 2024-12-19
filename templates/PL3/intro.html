@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Multi-Product Inventory Optimization</title>
+    <style>
+        body {
+            justify-content: center;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .flex-container {
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+            width: 60%;
+            padding: 30px;
+        }
+    </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+    <button id="gg" onclick="window.location.href = '/'">Home</button>
+
+    <div class="flex-container" style="z-index: 5;">
+        <div class="a">
+            <h1>Multi-Product Inventory Optimization</h1>
+            <p>
+                The <strong>Multi-Product Inventory Optimization Problem</strong> involves determining optimal ordering and storage strategies for multiple products over multiple time periods, considering various constraints such as storage capacity, product expiration, and setup costs.
+            </p>
+
+            <h2>Real-World Applications</h2>
+            
+            <h3>1. Retail and Distribution</h3>
+            <ul>
+                <li><strong>Supermarket Chains:</strong> Managing perishable goods inventory across multiple stores.</li>
+                            </ul>
+
+            <h3>2. Pharmaceutical Industry</h3>
+            <ul>
+                <li><strong>Medical Supplies:</strong> Balancing inventory of various medical products with limited shelf life.</li>
+            </ul>
+
+            <h3>3. Food and Beverage Industry</h3>
+            <ul>
+                <li><strong>Food Distribution:</strong> Optimizing perishable food storage and ordering.</li>
+            </ul>
+
+            <h3>4. Manufacturing</h3>
+            <ul>
+                <li><strong>Raw Materials:</strong> Managing multiple components with different storage requirements.</li>
+            </ul>
+
+            <h2>Mathematical Formulation</h2>
+            
+            <h3>1. Sets and Indices</h3>
+            <ul>
+                <li>Time periods: \( T = \{1, \ldots, |T|\} \)</li>
+                <li>Products: \( P = \{1, \ldots, |P|\} \)</li>
+            </ul>
+
+            <h3>2. Parameters</h3>
+            <ul>
+                <li>Demand: \( d_{p,t} \) for product \(p\) in period \(t\)</li>
+                <li>Holding cost: \( h_p \) for product \(p\)</li>
+                <li>Ordering cost: \( c_p \) per unit of product \(p\)</li>
+                <li>Setup cost: \( s_p \) for ordering product \(p\)</li>
+                <li>Capacity: \( Cap_p \) maximum storage for product \(p\)</li>
+                <li>Shared capacity: \( SCap \) total warehouse capacity</li>
+                <li>Expiration periods: \( e_p \) shelf life of product \(p\)</li>
+            </ul>
+
+            <h3>3. Decision Variables</h3>
+            \[
+            x_{p,t} = \text{order quantity of product } p \text{ in period } t
+            \]
+            \[
+            I_{p,t} = \text{inventory level of product } p \text{ at end of period } t
+            \]
+            \[
+            y_{p,t} = \begin{cases}
+            1 & \text{if an order is placed for product } p \text{ in period } t \\
+            0 & \text{otherwise}
+            \end{cases}
+            \]
+
+            <h3>4. Objective Function</h3>
+            <p>Minimize total costs:</p>
+            \[ \text{Minimize} \sum_{p \in P} \sum_{t \in T} (c_p x_{p,t} + s_p y_{p,t} + h_p I_{p,t}) \]
+
+            <h3>5. Constraints</h3>
+            <p><strong>Inventory Balance:</strong></p>
+            \[ I_{p,t} = I_{p,t-1} + x_{p,t} - d_{p,t} \quad \forall p \in P, t \in T \]
+            
+            <p><strong>Initial Inventory:</strong></p>
+            \[ I_{p,0} = x_{p,0} - d_{p,0} \quad \forall p \in P \]
+
+            <p><strong>Expiration:</strong></p>
+            \[ I_{p,t} \leq \sum_{k=\max(0,t-e_p+1)}^t x_{p,k} \quad \forall p \in P, t \in T \]
+
+            <p><strong>Individual Capacity:</strong></p>
+            \[ I_{p,t} \leq Cap_p \quad \forall p \in P, t \in T \]
+
+            <p><strong>Shared Capacity:</strong></p>
+            \[ \sum_{p \in P} I_{p,t} \leq SCap \quad \forall t \in T \]
+
+            <p><strong>Setup Forcing:</strong></p>
+            \[ x_{p,t} \leq M_p y_{p,t} \quad \forall p \in P, t \in T \]
+            where \( M_p = \sum_{t \in T} d_{p,t} \)
+
+            <p><strong>Non-negativity:</strong></p>
+            \[ I_{p,t}, x_{p,t} \geq 0 \quad \forall p \in P, t \in T \]
+            
+            <h2>Implementation Notes</h2>
+            <p>
+                This formulation is implemented using the Gurobi optimization solver, which:
+            </p>
+            <ul>
+                <li>Creates continuous variables for order quantities (\(x_{p,t}\)) and inventory levels (\(I_{p,t}\))</li>
+                <li>Uses binary variables (\(y_{p,t}\)) for setup decisions</li>
+                <li>Implements all capacity and expiration constraints</li>
+                <li>Handles both individual and shared storage limitations</li>
+                <li>Considers setup costs and minimum order quantities</li>
+            </ul>
+
+            <button onclick="window.location.href = '/PL3_start'">Continue to Implementation</button>
+        </div>
+    </div>
+</body>
+<script>
+    function navigateTo(url) {
+        window.location.href = url;
+    }
+
+    document.addEventListener('mousemove', (e) => {
+        const trail = document.createElement('div');
+        trail.className = 'trail';
+
+        // Position the trail at the mouse location
+        trail.style.left = `${e.pageX}px`;
+        trail.style.top = `${e.pageY}px`;
+
+        // Generate a dynamic color based on cursor position
+        const red = Math.floor((e.clientX / window.innerWidth) * 255);
+        const blue = 255 - red;
+        trail.style.backgroundColor = `rgba(${red}, 0, ${blue}, 0.6)`;
+
+        // Append the trail to the body
+        document.body.appendChild(trail);
+
+        // Remove the trail after the animation ends
+        trail.addEventListener('animationend', () => {
+            trail.remove();
+        });
+    });
+</script>
+</html>
