@@ -21,11 +21,19 @@
                 </div>
                 {% endfor %}
                 <button type="submit">Next</button>
+                <button type="button" onclick=gg(event)>Values</button>
+
             </form>
         </div>
     </div>
 </body>
 <script>
+    function gg(e) {
+        e.preventDefault();
+        document.querySelector("#product_name_1").value = "Product test 1";
+        document.querySelector("#product_name_2").value = "Product test 2";
+        document.querySelector("#product_name_3").value = "Product test 3";
+    }
 
     document.addEventListener('mousemove', (e) => {
         const trail = document.createElement('div');

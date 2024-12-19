@@ -23,11 +23,19 @@
                     <input type="number" id="products" name="products" min="1" required>
                 </div>
                 <button type="submit">Next</button>
+                <button type="button" onclick=gg(event)>Values</button>
+
             </form>
         </div>
     </div>
 </body>
 <script>
+
+    function gg(event) {
+        event.preventDefault();
+        document.querySelector('#periods').value = 4;
+        document.querySelector('#products').value = 3;
+    }
 
     document.addEventListener('mousemove', (e) => {
         const trail = document.createElement('div');

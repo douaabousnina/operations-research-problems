@@ -1,2 +1,1 @@
-
-    # Initial Inventory: Provided as input (e.g., starting 
+2

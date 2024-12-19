@@ -17,34 +17,35 @@
 
             <h3>Order Quantities</h3>
             <div>
-                {% for product_index in range(product_names | length) %}
-                <h4>{{ product_names[product_index] }} :</h4>
                 <table border="1">
                     <thead>
                         <tr>
                             <th>Period</th>
-                            <th>Order Quantity</th>
+                            {% for product_index in range(product_names | length) %}
+                            <th>{{ product_names[product_index] }}</th>
+                            {% endfor %}
                         </tr>
                     </thead>
                     <tbody>
-                        {% for (product, period), quantity in order_quantities.items() if product == product_index %}
+                        {% for period in range(4) %}  <!-- Assuming 4 periods from your previous data -->
                         <tr>
                             <td>{{ period }}</td>
-                            <td>{{ quantity }}</td>
+                            {% for product_index in range(product_names | length) %}
+                            <td>{{ order_quantities.get((product_index, period), 0) }}</td>
+                            {% endfor %}
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-                {% endfor %}
             </div>
 
 
-            <h3>Inventory Levels</h3>
+            <!-- <h3>Inventory Levels</h3>
             <ul>
                 {% for (product, period), level in inventory_levels.items() %}
                 <li>{{ product_names[product] }}, Period {{ period }}: {{ level }}</li>
                 {% endfor %}
-            </ul>
+            </ul> -->
         </div>
     </div>
 </body>
