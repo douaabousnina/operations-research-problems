@@ -18,14 +18,14 @@
             <h3>Order Quantities</h3>
             <ul>
                 {% for (product, period), quantity in order_quantities.items() %}
-                <li>Product {{ product }}, Period {{ period }}: {{ quantity }}</li>
+                {{ product_names[product] }}, Period {{ period }}: {{ quantity }}
                 {% endfor %}
             </ul>
 
             <h3>Inventory Levels</h3>
             <ul>
                 {% for (product, period), level in inventory_levels.items() %}
-                <li>Product {{ product }}, Period {{ period }}: {{ level }}</li>
+                <li>{{ product_names[product] }}, Period {{ period }}: {{ level }}</li>
                 {% endfor %}
             </ul>
         </div>
@@ -55,4 +55,5 @@
         });
     });
 </script>
+
 </html>

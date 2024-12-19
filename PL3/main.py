@@ -18,7 +18,6 @@ def solve_multi_product_inventory(periods, products, demands, holding_costs, ord
     shared_capacity (float): Optional shared warehouse capacity constraint
     """
     try:
-        # Create a new model
         model = gp.Model("Multi_Product_Inventory_Optimization")
         
         # Decision Variables
@@ -28,8 +27,8 @@ def solve_multi_product_inventory(periods, products, demands, holding_costs, ord
         
         # Objective Function: Minimize total costs
         obj = (gp.quicksum(ordering_costs[p] * order[p,t] + 
-                          setup_costs[p] * y[p,t] + 
-                          holding_costs[p] * inventory[p,t] 
+                          setup_costs[p] * y[p,t] 
+                          + holding_costs[p] * inventory[p,t] 
                           for p in range(products) 
                           for t in range(periods)))
         model.setObjective(obj, GRB.MINIMIZE)
