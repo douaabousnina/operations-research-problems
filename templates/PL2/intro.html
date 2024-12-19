@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <title>Introduction to CSP</title>
+    <title>Graph Coloring Problem</title>
     <style>
         body {
             justify-content: center;
@@ -33,21 +33,30 @@
 
     <div class="flex-container">
         <div class="a">
-            <h1>Understanding Constraint Satisfaction Problems</h1>
+            <h1>The Graph Coloring Problem</h1>
+            <a href="https://en.wikipedia.org/wiki/Graph_coloring" target="_blank">Learn more about Graph Coloring</a>
             <p>
-                A <strong>Constraint Satisfaction Problem (CSP)</strong> is a mathematical framework used to solve problems
-                where a set of variables must be assigned values from specified domains while satisfying a set of constraints.
-                In this implementation, we'll focus on the Graph Coloring Problem using Integer Linear Programming.
+                The <strong>Graph Coloring Problem</strong> involves assigning colors to vertices of a graph such that no adjacent vertices share the same color. This classical optimization problem has numerous practical applications and is solved using Integer Linear Programming techniques.
             </p>
 
-            <h2>Components of CSP</h2>
+            <h2>Real-World Applications</h2>
+            
+            <h3>1. Scheduling and Resource Allocation</h3>
             <ul>
-                <li><strong>Variables:</strong> The vertices that need to be assigned colors.</li>
-                <li><strong>Domains:</strong> The possible colors each vertex can take.</li>
-                <li><strong>Constraints:</strong> Rules ensuring adjacent vertices have different colors.</li>
+                <li><strong>Exam Timetabling:</strong> Scheduling exams so that no student has two exams at the same time. Each course is a vertex, and edges connect courses with common students.</li>
             </ul>
 
-            <h2>Mathematical Formulation of Graph Coloring</h2>
+            <h3>2. Telecommunications</h3>
+            <ul>
+                <li><strong>Frequency Assignment:</strong> Allocating radio frequencies to transmitters while minimizing interference. Each transmitter is a vertex, and edges connect transmitters that could interfere.</li>
+            </ul>
+
+            <h3>3. Register Allocation in Compilers</h3>
+            <ul>
+                <li><strong>CPU Register Assignment:</strong> Assigning variables to CPU registers during program compilation. Variables are vertices, and edges connect variables that are needed at the same time.</li>
+            </ul>
+
+                       <h2>Mathematical Formulation</h2>
             
             <h3>1. Sets and Parameters</h3>
             <ul>
@@ -95,7 +104,7 @@
                 <li>Minimizes the total number of colors used in the solution</li>
             </ul>
 
-            <button onclick="window.location.href = '/PL2_start'">Continue to Graph Coloring Problem</button>
+            <button onclick="window.location.href = '/PL2_start'">Continue to Graph Coloring Implementation</button>
         </div>
     </div>
 </body>
