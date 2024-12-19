@@ -16,11 +16,28 @@
             <h2>Total Cost: {{ total_cost }}</h2>
 
             <h3>Order Quantities</h3>
-            <ul>
-                {% for (product, period), quantity in order_quantities.items() %}
-                {{ product_names[product] }}, Period {{ period }}: {{ quantity }}
+            <div>
+                {% for product_index in range(product_names | length) %}
+                <h4>{{ product_names[product_index] }} :</h4>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Order Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for (product, period), quantity in order_quantities.items() if product == product_index %}
+                        <tr>
+                            <td>{{ period }}</td>
+                            <td>{{ quantity }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 {% endfor %}
-            </ul>
+            </div>
+
 
             <h3>Inventory Levels</h3>
             <ul>
