@@ -14,9 +14,13 @@ app.secret_key = 'your_secret_key_here'  # Required for using session data
 def home():
     return render_template('index.html')
 
+@app.route('/PL2')
+def PL1():
+    return render_template('PL2/intro.html')
+
 
 @app.route('/PL1', methods=['GET', 'POST'])
-def PL1():
+def PL1_start():
     if request.method == 'POST':
         session['num_ingredients'] = int(request.form['num_ingredients'])
         session['num_properties'] = int(request.form['num_properties'])
@@ -116,7 +120,7 @@ def PL1_solution():
     return render_template('PL1/result.html', result=result)
 
 
-@app.route("/PL2", methods=["GET", "POST"])
+@app.route("/PL2_start", methods=["GET", "POST"])
 def PL2():
     if request.method == "POST":
         try:
